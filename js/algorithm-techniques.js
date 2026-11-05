@@ -1,0 +1,14 @@
+(function(g){const R=typeof module==='object'?require('./algorithm-runtime'):g.AlgorithmRuntime;
+const d=(n,p,l,t)=>R.define(n,p,l,t.replace(/;/g,';\n').replace(/\{/g,'{\n').replace(/\}/g,'\n}\n'));
+d('TwoSum','','left,right,sum',`left = 0; right = n-1; while (left < right) { sum = A[left]+A[right]; if (sum == target) { outL = left; outR = right; return 1; } if (sum < target) { left = left+1; } else { right = right-1; } } valid = 0; return 0;`);
+d('MergeSorted','','i,j,k',`i = 0; j = 0; k = 0; while (i < n || j < m) { if (j == m || (i < n && Cmp(A[i],B[j]) <= 0)) { X[k] = A[i]; i = i+1; } else { X[k] = B[j]; j = j+1; } k = k+1; } total = k; return k;`);
+d('Window','','i,sum,best',`sum = 0; i = 0; while (i < window) { sum = sum+A[i]; i = i+1; } best = sum; outL = 0; outR = window-1; while (i < n) { sum = sum-A[i-window]+A[i]; if (sum > best) { best = sum; outL = i-window+1; outR = i; } i = i+1; } return best;`);
+d('Unique','','i,left,best',`i = 0; left = 0; best = 0; while (i < n) { if (Last[A[i]-32] >= left) { left = Last[A[i]-32]+1; } Last[A[i]-32] = i; if (i-left+1 > best) { best = i-left+1; outL = left; outR = i; } i = i+1; } return best;`);
+d('Prefix','','i',`Set(0,0); i = 0; while (i < n) { Set(i+1,Get(i)+A[i]); i = i+1; } return Get(right+1)-Get(left);`);
+d('Difference','','i,sum',`i = 0; while (i < n) { if (i == 0) { X[i] = A[i]; } else { X[i] = A[i]-A[i-1]; } i = i+1; } X[n] = 0; X[left] = X[left]+delta; X[right+1] = X[right+1]-delta; sum = 0; i = 0; while (i < n) { sum = sum+X[i]; B[i] = sum; i = i+1; } total = n; return 0;`);
+d('NextGreater','','i,top,j',`i = 0; top = 0; while (i < n) { X[i] = -1; while (top > 0 && Cmp(A[Q[top-1]],A[i]) < 0) { j = Q[top-1]; top = top-1; X[j] = i; } Q[top] = i; top = top+1; Enqueue(); i = i+1; } total = n; return 0;`);
+d('NextScan','','i,j',`i = 0; while (i < n) { X[i] = -1; j = i+1; while (j < n && X[i] < 0) { if (Cmp(A[j],A[i]) > 0) { X[i] = j; } j = j+1; } i = i+1; } total = n; return 0;`);
+d('MonoQueue','','head,tail,i',`head = 0; tail = 0; i = 0; total = 0; while (i < n) { while (head < tail && Q[head] <= i-window) { head = head+1; } while (head < tail && Cmp(A[Q[tail-1]],A[i]) <= 0) { tail = tail-1; } Q[tail] = i; tail = tail+1; Enqueue(); if (i+1 >= window) { X[total] = Q[head]; total = total+1; } i = i+1; } return total;`);
+d('Feasible','limit','i,groups,sum',`i = 0; groups = 1; sum = 0; while (i < n) { if (sum+A[i] > limit) { groups = groups+1; sum = 0; } sum = sum+A[i]; i = i+1; } return groups <= parts;`);
+d('Capacity','','lo,hi,mid,i,v',`if (n == 0) { return 0; } lo = 0; hi = 0; i = 0; while (i < n) { lo = Max(lo,A[i]); hi = hi+A[i]; i = i+1; } while (lo < hi) { mid = lo+Div(hi-lo,2); v = Feasible(mid); if (v == 1) { hi = mid; } else { lo = mid+1; } } return lo;`);
+})(globalThis);

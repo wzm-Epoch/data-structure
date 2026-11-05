@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="链表交互学习实验室：单链表、双链表、循环单链表，逐句观察指针、节点、申请与释放。">
+  <title>链表实验室 · 知序</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23187c68'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-size='40' fill='white'%3E序%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="linked.css">
+  <script defer src="js/engine.js"></script><script defer src="js/linked-engine.js"></script><script defer src="js/linked-content.js"></script><script defer src="js/linked-app.js"></script>
+</head>
+<body class="linked-page">
+  <aside class="sidebar">
+    <a class="brand" href="index.html" aria-label="知序首页"><span class="brand-icon">序</span><span>知序<span class="brand-sub">DATA STRUCTURE LAB</span></span></a>
+    <div class="course-label">你的 408 学习实验室</div><div class="side-caption">学习目录 <span>01 / 08</span></div>
+    <nav class="chapters" aria-label="章节目录">
+      <button class="chapter current" data-view="demo"><span class="chapter-number">01</span><span>线性表<small>从存储，走向连接</small></span><span class="chapter-dot"></span></button>
+      <a class="future-sub lesson-link" href="index.html">顺序表 <span>已开放 ↗</span></a>
+      <button class="subchapter linked-current" data-view="demo">链表 <span class="mini-tag">学习中</span></button>
+      <div class="linked-nav"><button data-kind="single">单链表 <span>8 项</span></button><button data-kind="double">双链表 <span>2 项</span></button><button data-kind="circular">循环单链表 <span>3 项</span></button><button data-experiment>插入错序实验 <span>LAB</span></button></div>
+      <button class="chapter planned" data-view="compare"><span class="chapter-number">↔</span><span>链表结构对比</span></button>
+      <button class="chapter planned" data-view="pitfalls"><span class="chapter-number">!</span><span>常见易错点</span></button>
+      <a class="chapter planned lesson-link" href="index.html"><span class="chapter-number">…</span><span>完整学习路线</span><span class="future">↗</span></a>
+    </nav>
+    <div class="side-bottom"><div class="side-note"><span class="status-dot"></span> 连接变化，逐句看清。<p>先分清指针，再理解链表。</p></div><button id="clear-progress" class="text-button">清除链表学习记录</button></div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar"><div>数据结构 <span class="breadcrumb">/</span> 线性表 <span class="breadcrumb">/</span> <strong>链表</strong></div><nav class="chapter-switch" aria-label="切换线性表章节"><a href="index.html">顺序表</a><a href="linked.html" aria-current="page">链表</a><a href="stack-queue.html">栈与队列</a><a href="string.html">串与模式匹配</a><a href="tree.html">树与二叉树</a><a href="graph.html">图</a><a href="search.html">查找</a><a href="sort.html">排序</a><a href="algorithm.html">算法设计与应用</a></nav></header>
+    <main>
+      <section class="page-intro"><div><div class="eyebrow">CHAPTER 01 <span>线性表的链式表示</span></div><h1>链表<span>数据不必相邻，连接自有顺序。</span></h1><p>跟随每一次指向变化，理解节点如何接入、断开、逆置与释放。</p></div><div class="lesson-progress"><span id="completed-count">0 / 13</span><small>算法演示已完成</small><div class="progress-track"><div id="completion-fill"></div></div></div></section>
+      <div class="tabs linked-tabs" role="tablist" aria-label="链表学习视图">
+        <button role="tab" id="tab-concept" aria-controls="view-concept" data-view="concept" aria-selected="false">概念导读</button>
+        <button role="tab" id="tab-demo" aria-controls="view-demo" data-view="demo" aria-selected="true" class="active">逐行演示 <span class="tab-mark">LAB</span></button>
+        <button role="tab" id="tab-compare" aria-controls="view-compare" data-view="compare" aria-selected="false">结构对比</button>
+        <button role="tab" id="tab-quiz" aria-controls="view-quiz" data-view="quiz" aria-selected="false">自测练习</button>
+        <button role="tab" id="tab-pitfalls" aria-controls="view-pitfalls" data-view="pitfalls" aria-selected="false">易错实验</button>
+      </div>
+      <section id="view-demo" class="view" role="tabpanel" aria-labelledby="tab-demo">
+        <div class="kind-heading"><div class="segmented" aria-label="链表类型"><button data-kind="single" aria-pressed="true" class="selected">单链表</button><button data-kind="double" aria-pressed="false">双链表</button><button data-kind="circular" aria-pressed="false">循环单链表</button></div><span class="hint-text">统一带头节点 · 原创 C 示例</span></div>
+        <div id="operation-list" class="operation-list" aria-label="链表算法"></div>
+        <div class="lesson-brief"><div><span id="lesson-category">SINGLY LINKED LIST</span><h2 id="lesson-title">按位插入</h2><p id="lesson-focus"></p></div><button id="download-code" class="secondary">↓ 下载 C 示例</button></div>
+        <form id="input-form" class="input-panel linked-input" novalidate>
+          <label class="array-input"><span id="array-label">初始数据节点</span><input id="array-input" value="12, 25, 37" placeholder="最多 8 个整数；留空为空表" autocomplete="off"></label>
+          <label id="position-field">位置 i <input id="position-input" type="number" step="1" value="2"></label>
+          <label id="value-field"><span id="value-label">插入值 e</span><input id="value-input" type="number" step="1" value="66"></label>
+          <label id="allocation-field">内存申请 <select id="fail-input"><option value="0">正常申请</option><option value="1">第 1 次失败</option><option value="2">第 2 次失败</option><option value="3">第 3 次失败</option><option value="4">第 4 次失败</option><option value="5">第 5 次失败</option><option value="6">第 6 次失败</option><option value="7">第 7 次失败</option><option value="8">第 8 次失败</option></select></label>
+          <button type="submit" class="primary">生成演示 ↗</button><div id="input-error" role="alert" hidden></div><div id="input-dirty" hidden>输入已修改，点击“生成演示”后生效；下方仍是上一次生成的状态。</div>
+        </form>
+        <div class="scenario-row"><span>快速试试</span><button data-scenario="normal">普通情况</button><button data-scenario="empty">空表</button><button data-scenario="single">单节点</button><button data-scenario="head">首位操作</button><button data-scenario="tail">尾部操作</button><button data-scenario="invalid">位置越界</button><button data-scenario="duplicate">重复值</button><button data-scenario="failure">申请失败</button></div>
+        <div class="lab-grid linked-lab-grid">
+          <section class="code-panel panel"><div class="panel-head"><h2><span class="tiny-icon">{ }</span> 算法代码</h2><span class="file-label">C / <span id="source-name"></span></span></div><div class="code-note"><span class="status-dot"></span> 高亮 = 执行后 <span class="critical-note">● 链接 / 内存步骤</span></div><div id="code-lines" class="code-lines" aria-label="链表算法源代码"></div><details class="definition"><summary>结构体、示例前提与符号约定</summary><pre id="definition-code"></pre><p id="preconditions"></p><p>malloc 失败通过输入选项模拟。Visit 由调用方提供。图中使用符号节点身份；free 后仅保留观察墓碑。函数返回后保留退出前记录。</p></details><div class="complexity-note"><span>复杂度</span><p id="complexity"></p></div></section>
+          <section class="visual-panel panel"><div class="panel-head"><h2><span class="tiny-icon">⌁</span> 节点与链接</h2><span id="state-badge" class="state-badge">尚未执行</span></div>
+            <div class="visual-inner linked-visual-inner"><div class="graph-note"><span id="graph-type"></span><span>点击节点可观察字段</span></div><div class="node-scroll"><svg id="node-graph" role="group" aria-label="链表节点与指针图"></svg></div>
+              <div class="legend linked-legend"><span><i class="legend-logical"></i>普通节点</span><span><i class="legend-read"></i>本步访问</span><span><i class="legend-write"></i>本步改写</span><span><i class="legend-detached"></i>不在 L 主链</span><span><i class="legend-freed"></i>已释放</span></div>
+              <div id="chain-summary" class="chain-summary"></div><div id="pointer-vars" class="pointer-vars" aria-label="指针变量"></div><div id="scalar-vars" class="variables" aria-label="标量与操作统计"></div>
+              <div class="explanation" aria-live="polite"><div class="explanation-top"><span id="step-phase"></span><span id="step-line"></span></div><h3 id="step-action"></h3><p id="step-explanation"></p><p id="step-detail" class="detail-text"></p></div>
+              <div id="prediction" class="prediction" hidden><div class="eyebrow">先想一想</div><h3>下一步会发生什么？</h3><div id="prediction-options"></div><p id="prediction-feedback" aria-live="polite"></p><button id="prediction-reveal" type="button" class="primary" hidden>查看这一步 →</button></div>
+            </div>
+          </section>
+        </div>
+        <section class="playback panel" aria-label="链表演示控制"><div class="playback-top"><div class="transport"><button id="reset" class="icon-button" title="回到初始状态" aria-label="重置演示">↺</button><button id="previous" class="secondary">← 上一步</button><button id="play" class="play-button">▶ 播放</button><button id="next" class="secondary">下一步 →</button></div><div class="playback-options"><label class="prediction-toggle"><input id="predict-toggle" type="checkbox">预测下一步</label><label class="speed-label">速度 <select id="speed"><option value="1800">慢速</option><option value="1000" selected>正常</option><option value="400">快速</option></select></label><label class="speed-label">暂停点 <select id="breakpoint"><option value="none">不设暂停点</option><option value="link">改写链接前</option><option value="free">释放节点前</option><option value="critical">链接 / 内存前</option></select></label></div></div><div class="timeline-row"><span id="step-counter">0 / 0</span><input id="timeline" type="range" min="0" max="1" value="0" aria-label="选择执行步骤"><span id="write-counter">链接改写 0 次</span></div><p id="pause-message" class="pause-message" aria-live="polite" hidden></p></section>
+        <div class="inspection-grid"><section class="panel node-inspector"><div class="panel-head"><h2>节点观察器</h2><select id="node-select" aria-label="选择观察节点"></select></div><div id="node-details"></div></section><section class="panel result-panel"><div class="panel-head"><h2>执行结果与操作统计</h2><button id="reuse-result" class="text-button" disabled>用结果继续操作 →</button></div><div id="result-details"></div></section></div>
+        <details class="panel history-panel"><summary>执行记录 <span id="history-count"></span><span>点击记录可回到对应步骤</span></summary><div id="history-list"></div></details>
+        <div class="takeaway"><span>本节要点</span><p id="takeaway"></p><button data-view="quiz" class="text-button">进入自测练习 →</button></div>
+      </section>
+      <section id="view-concept" class="view content-view" role="tabpanel" aria-labelledby="tab-concept" hidden><div class="section-heading"><div class="eyebrow">FOLLOW THE POINTER</div><h2>先分清指针，再理解链表</h2><p>位置、节点、指针和链接字段是四个不同的概念。</p></div><div id="concept-list" class="concept-grid"></div><article class="panel prose-panel"><h3>如何使用这个实验室</h3><p>先选择链表类型与算法，再用“普通情况”和“空表”等按钮生成例子。逐步前进时，观察代码行、指针标签和橙色链接。回退时节点和变量会一同恢复。</p><p>节点图采用稳定的展示布局，方便比较前后变化。暂时不在 L 主链的节点会变为虚线框，但它可能仍由 p、q、pre 或 s 持有，不一定发生内存泄漏。</p><p>初始最多输入 8 个数据节点是展示规模限制；链表没有本工具中的固定容量概念。新插入可以产生第 9 个数据节点。课程材料为原创，尚未逐页对照王道 2027。</p><button class="primary" data-view="demo">进入逐行演示 →</button></article></section>
+      <section id="view-compare" class="view content-view" role="tabpanel" aria-labelledby="tab-compare" hidden><div class="section-heading"><div class="eyebrow">SAME DATA, DIFFERENT LINKS</div><h2>不同链表，边界在哪里？</h2><p>重点比较头节点、尾部终止条件、反向链接和特殊边界。</p></div><div id="compare-list" class="comparison-grid"></div><article class="panel prose-panel"><h3>“O(1)”成立的前提</h3><p>单链表中，已知有效前驱 p 时，插入或删除其后继的链接修改可在 O(1) 内完成。若只给逻辑位置 i，从头寻找前驱最坏需要 O(n)。</p><p>非循环双链表中，已知有效数据节点及其前驱时，可以利用 prior 完成 O(1) 链接修改。本页为了练习按位操作，仍先从头定位。</p><p>本页展示的普通查找、遍历、插入、删除和迭代逆置，辅助空间为 O(1)。建表创建 n 个新节点需要 O(n) 节点存储。网页为回退保存的快照属于演示工具开销。</p></article></section>
+      <section id="view-quiz" class="view content-view" role="tabpanel" aria-labelledby="tab-quiz" hidden><div class="section-heading"><div class="eyebrow">THINK BEFORE YOU CLICK</div><h2>从会看，走向会判断</h2><p>13 道原创自测，覆盖指针、边界、构建、逆置和复杂度。答错后可以重选。</p></div><div id="quiz-list" class="quiz-list"></div><div class="quiz-summary panel"><strong id="quiz-score">已掌握 0 / 13</strong><button id="quiz-reset" class="secondary">重新练习</button></div></section>
+      <section id="view-pitfalls" class="view content-view" role="tabpanel" aria-labelledby="tab-pitfalls" hidden><div class="section-heading"><div class="eyebrow">UNDERSTAND THE FAILURE</div><h2>两句顺序换了，为什么出错？</h2><p>逐句观察错误结构，比只记“顺序不能反”更容易理解。</p></div><article class="panel wrong-order-card"><div class="wrong-order-columns"><div><span class="correct-label">正确顺序</span><pre>s-&gt;next = p-&gt;next;&#10;p-&gt;next = s;</pre><p>先接住原后继，再接入新节点。</p><button id="show-correct" class="primary">演示正确插入 →</button></div><div><span class="wrong-label">错误顺序</span><pre>p-&gt;next = s;&#10;s-&gt;next = p-&gt;next;</pre><p>第二句读到的 p->next 已经是 s。</p><button data-experiment class="secondary">进入错序实验 →</button></div></div></article><div id="pitfall-list" class="concept-grid"></div></section>
+      <footer><span>知序 · 理解先于记忆</span><span>链表实验室 · 教学模拟，非 C 编译器 <button id="mobile-clear" class="text-button">清除本章记录</button></span></footer>
+    </main>
+  </div><noscript>请启用 JavaScript 后使用交互学习工具。</noscript>
+</body>
+</html>

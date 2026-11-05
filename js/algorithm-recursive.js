@@ -1,0 +1,13 @@
+(function(g){const R=typeof module==='object'?require('./algorithm-runtime'):g.AlgorithmRuntime;
+const d=(n,p,l,t)=>R.define(n,p,l,t.replace(/;/g,';\n').replace(/\{/g,'{\n').replace(/\}/g,'\n}\n'));
+d('Factorial','x','v',`if (x == 0) { return 1; } v = Factorial(x-1); return x*v;`);
+d('Fib','x','a,b',`if (x < 2) { return x; } a = Fib(x-1); b = Fib(x-2); return a+b;`);
+d('FibMemo','x','a,b',`if (K[x]) { return Get(x); } if (x < 2) { Set(x,x); return x; } a = FibMemo(x-1); b = FibMemo(x-2); Set(x,a+b); return Get(x);`);
+d('FibDP','','i',`Set(0,0); if (n > 0) { Set(1,1); } i = 2; while (i <= n) { Set(i,Get(i-1)+Get(i-2)); i = i+1; } return Get(n);`);
+d('PowerRec','a,e','v',`if (e == 0) { return 1%mod; } v = PowerRec(a,Div(e,2)); v = v*v%mod; if (e%2 == 1) { v = v*a%mod; } return v;`);
+d('PowerIter','a,e','v',`v = 1%mod; while (e > 0) { if (e%2 == 1) { v = v*a%mod; } a = a*a%mod; e = Div(e,2); } return v;`);
+d('MaxDivide','lo,hi','mid,left,right,sum,ls,rs,i',`if (lo == hi) { return A[lo]; } mid = Div(lo+hi,2); left = MaxDivide(lo,mid); right = MaxDivide(mid+1,hi); sum = 0; ls = A[mid]; i = mid; while (i >= lo) { sum = sum+A[i]; ls = Max(ls,sum); i = i-1; } sum = 0; rs = A[mid+1]; i = mid+1; while (i <= hi) { sum = sum+A[i]; rs = Max(rs,sum); i = i+1; } return Max(Max(left,right),ls+rs);`);
+d('MaxLinear','','i,start,cur,best',`if (n == 0) { valid = 0; return 0; } start = 0; cur = A[0]; best = cur; outL = 0; outR = 0; i = 1; while (i < n) { if (cur < 0) { cur = A[i]; start = i; } else { cur = cur+A[i]; } if (cur > best) { best = cur; outL = start; outR = i; } i = i+1; } return best;`);
+d('MaxBrute','','i,j,sum,best',`if (n == 0) { valid = 0; return 0; } best = A[0]; i = 0; while (i < n) { sum = 0; j = i; while (j < n) { sum = sum+A[j]; if (sum > best) { best = sum; } j = j+1; } i = i+1; } return best;`);
+d('RunDivide','','v,i,j,sum,found',`if (n == 0) { valid = 0; return 0; } v = MaxDivide(0,n-1); found = 0; i = 0; while (i < n && found == 0) { sum = 0; j = i; while (j < n && found == 0) { sum = sum+A[j]; if (sum == v) { outL = i; outR = j; found = 1; } j = j+1; } i = i+1; } return v;`);
+})(globalThis);

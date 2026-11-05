@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>栈与队列实验室 · 知序</title><link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="linked.css"><link rel="stylesheet" href="stack-queue.css">
+  <script defer src="js/engine.js"></script><script defer src="js/stack-queue-engine.js"></script><script defer src="js/stack-queue-content.js"></script><script defer src="js/stack-queue-app.js?v=0.3.0"></script>
+</head>
+<body class="linked-page">
+  <aside class="sidebar">
+    <a class="brand" href="index.html"><span class="brand-icon">序</span><span>知序<span class="brand-sub">DATA STRUCTURE LAB</span></span></a>
+    <div class="course-label">你的 408 学习实验室</div><div class="side-caption">学习目录 <span>02 / 08</span></div>
+    <nav class="chapters" aria-label="章节目录">
+      <a class="future-sub lesson-link" href="index.html">顺序表 <span>已开放 ↗</span></a><a class="future-sub lesson-link" href="linked.html">链表 <span>已开放 ↗</span></a>
+      <button class="chapter current" data-view="demo"><span class="chapter-number">02</span><span>栈与队列<small>边界清楚，进出有序</small></span></button>
+      <div class="linked-nav"><button data-kind="arrayStack">顺序栈</button><button data-kind="linkedStack">链栈</button><button data-kind="circularQueue">循环队列</button><button data-kind="linkedQueue">链式队列</button></div>
+      <button class="chapter planned" data-view="compare">结构对比</button><button class="chapter planned" data-view="pitfalls">常见错误</button>
+    </nav>
+    <div class="side-bottom"><div class="side-note">边界先于操作。<p>读懂 top、front 与 rear。</p></div><button id="clear-progress" class="text-button">清除本章学习记录</button></div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar"><div>数据结构 <span class="breadcrumb">/</span><strong>栈与队列</strong></div><nav class="chapter-switch" aria-label="切换章节"><a href="index.html">顺序表</a><a href="linked.html">链表</a><a href="stack-queue.html" aria-current="page">栈与队列</a><a href="string.html">串与模式匹配</a><a href="tree.html">树与二叉树</a><a href="graph.html">图</a><a href="search.html">查找</a><a href="sort.html">排序</a><a href="algorithm.html">算法设计与应用</a></nav></header>
+    <main>
+      <section class="page-intro"><div><div class="eyebrow">CHAPTER 02 <span>受限的线性结构</span></div><h1>栈与队列<span>从哪里进入，又从哪里离开？</span></h1><p>跟随每一次边界变化，理解后进先出、先进先出与空满判断。</p></div><div class="lesson-progress"><span id="completed-count">0 / 22</span><small>操作演示已完成</small><div class="progress-track"><div id="completion-fill"></div></div></div></section>
+      <div class="tabs linked-tabs" role="tablist" aria-label="学习视图">
+        <button id="tab-concept" role="tab" aria-controls="view-concept" data-view="concept">概念导读</button><button id="tab-demo" role="tab" aria-controls="view-demo" data-view="demo" class="active">逐行演示 <span class="tab-mark">LAB</span></button><button id="tab-compare" role="tab" aria-controls="view-compare" data-view="compare">结构对比</button><button id="tab-quiz" role="tab" aria-controls="view-quiz" data-view="quiz">自测练习</button><button id="tab-pitfalls" role="tab" aria-controls="view-pitfalls" data-view="pitfalls">常见错误</button>
+      </div>
+      <section id="view-demo" class="view" role="tabpanel" aria-labelledby="tab-demo">
+        <div class="kind-heading"><div class="segmented"><button data-kind="arrayStack">顺序栈</button><button data-kind="linkedStack">链栈</button><button data-kind="circularQueue">循环队列</button><button data-kind="linkedQueue">链式队列</button></div><span class="hint-text">原创 C 示例 · 可离线使用</span></div>
+        <div id="operation-list" class="operation-list"></div>
+        <div class="lesson-brief"><div><span id="lesson-category"></span><h2 id="lesson-title"></h2><p id="lesson-focus"></p></div><button id="download-code" class="secondary">↓ 下载 C 示例</button></div>
+        <form id="input-form" class="input-panel linked-input" novalidate>
+          <label class="array-input"><span id="array-label">初始元素</span><input id="array-input" value="12, 25, 37" autocomplete="off"></label>
+          <label id="capacity-field">物理容量 M<select id="capacity-input"><option>6</option><option selected>8</option><option>12</option></select></label>
+          <label id="front-field">初始 front<input id="front-input" type="number" value="0" step="1"></label>
+          <label id="value-field">输入值 e<input id="value-input" type="number" value="66" step="1"></label>
+          <label id="allocation-field">内存申请<select id="fail-input"><option value="0">正常</option><option value="1">申请失败</option></select></label>
+          <button type="submit" class="primary">生成演示 ↗</button><div id="input-error" role="alert" hidden></div><div id="input-dirty" hidden>输入已修改，重新生成后生效；下方仍为原轨迹。</div>
+        </form>
+        <div class="scenario-row"><span>快速试试</span><button data-scenario="normal">普通情况</button><button data-scenario="empty">空结构</button><button data-scenario="single">单元素</button><button data-scenario="full">满结构</button><button data-scenario="duplicate">重复值</button><button data-scenario="wrap">下标绕回</button><button data-scenario="failure">申请失败</button><button data-scenario="invalid">非法输入</button></div>
+        <div class="lab-grid linked-lab-grid">
+          <section class="code-panel panel"><div class="panel-head"><h2>算法代码</h2><span id="source-name" class="file-label"></span></div><div class="code-note">高亮 = 刚执行完的语句</div><div id="code-lines" class="code-lines"></div><details class="definition"><summary>结构定义与前提</summary><pre id="definition-code"></pre><p id="preconditions"></p><p>对象与输出指针有效。初始化只支持空输入，链式空头节点由调用方事先提供。符号 H/N/P 不是实际内存地址。教学模拟仅支持预置算法，不运行任意 C 代码。</p></details><div class="complexity-note"><span>复杂度</span><p>本页基本操作时间 O(1)，辅助空间 O(1)。前提为合法结构及通常的常数时间分配/释放模型；链式入操作新增一个节点。数组结构存储 O(M)，链式 O(n)。网页快照开销另计。</p></div></section>
+          <section class="visual-panel panel"><div class="panel-head"><h2>存储与逻辑次序</h2><span id="state-badge" class="state-badge"></span></div><div class="visual-inner"><p id="graph-note" class="graph-note"></p><div id="structure-graph" class="sq-graph"></div><div class="legend"><span><i class="legend-logical"></i>有效元素</span><span><i class="legend-read"></i>本步读取</span><span><i class="legend-write"></i>本步改写</span><span>虚线：逻辑范围外</span></div><div id="chain-summary" class="chain-summary"></div><div id="pointer-vars" class="pointer-vars"></div><div id="scalar-vars" class="variables"></div><div class="explanation" aria-live="polite"><div class="explanation-top"><span id="step-phase"></span><span id="step-line"></span></div><h3 id="step-action"></h3><p id="step-explanation"></p><p id="step-detail" class="detail-text"></p></div><div id="prediction" class="prediction" hidden><h3>下一步会发生什么？</h3><div id="prediction-options"></div><p id="prediction-feedback" aria-live="polite"></p><button id="prediction-reveal" class="primary" hidden>揭示这一步 →</button></div></div></section>
+        </div>
+        <section class="playback panel" aria-label="演示控制"><div class="playback-top"><div class="transport"><button id="reset" class="icon-button" aria-label="重置演示">↺</button><button id="previous" class="secondary">← 上一步</button><button id="play" class="play-button">▶ 播放</button><button id="next" class="secondary">下一步 →</button></div><div class="playback-options"><label><input id="predict-toggle" type="checkbox">预测下一步</label><label class="speed-label">速度<select id="speed"><option value="1800">慢速</option><option value="1000" selected>正常</option><option value="400">快速</option></select></label><label class="speed-label">暂停点<select id="breakpoint"><option value="none">不设暂停点</option><option value="write">数据写入前</option><option value="pointer">边界 / 链接改写前</option><option value="free">释放前</option><option value="critical">所有关键步骤前</option></select></label></div></div><div class="timeline-row"><span id="step-counter"></span><input id="timeline" type="range" min="0" max="1" value="0" aria-label="选择执行步骤"><span id="write-counter"></span></div><p id="pause-message" class="pause-message" hidden aria-live="polite"></p></section>
+        <section class="panel prose-panel"><h3>结果与状态</h3><p id="result-details"></p><button id="reuse-result" class="text-button">用结果继续操作 →</button></section>
+        <details class="panel history-panel"><summary>执行记录（点击跳转）</summary><div id="history-list"></div></details>
+      </section>
+      <section id="view-concept" class="view content-view" role="tabpanel" aria-labelledby="tab-concept" hidden><div class="section-heading"><h2>先分清边界，再理解进出</h2><p>原创内容；未提供教材，不声称复刻王道 2027 或已完整核对当年考纲。</p></div><div id="concept-list" class="concept-grid"></div><article class="panel prose-panel"><h3>支持范围</h3><p>四类结构提供初始化、判空、读取、入、出操作；两类数组结构另有判满。共享栈、双端队列、表达式求值、表达式求值和图等为后续规划；树与递归章节已独立开放；串章节已独立开放。输入中的重复值是独立元素，不去重。</p></article></section>
+      <section id="view-compare" class="view content-view" role="tabpanel" aria-labelledby="tab-compare" hidden><div class="section-heading"><h2>相同逻辑，不同存储边界</h2></div><div id="compare-list" class="comparison-grid"></div></section>
+      <section id="view-pitfalls" class="view content-view" role="tabpanel" aria-labelledby="tab-pitfalls" hidden><div class="section-heading"><h2>常见错误与原因</h2></div><div id="pitfall-list" class="concept-grid"></div></section>
+      <section id="view-quiz" class="view content-view" role="tabpanel" aria-labelledby="tab-quiz" hidden><div class="section-heading"><h2>检查你对边界的理解</h2><p>12 道原创题；答错后可重选，每题都有解析。</p></div><div id="quiz-list" class="quiz-list"></div><div class="quiz-summary panel"><strong id="quiz-score"></strong><button id="quiz-reset" class="secondary">重新练习</button></div></section>
+      <footer><span>知序 · 理解先于记忆</span><span>教学模拟，非 C 编译器 <button id="mobile-clear" class="text-button">清除本章记录</button></span></footer>
+    </main>
+  </div><noscript>请启用 JavaScript 使用交互功能。</noscript>
+</body>
+</html>

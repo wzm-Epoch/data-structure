@@ -1,0 +1,16 @@
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),{spawnSync}=require('node:child_process'),L=require('../js/string-engine');
+const dir=path.resolve(__dirname,'../work/string-c-check');fs.mkdirSync(dir,{recursive:true});const gcc=process.argv[2]||'D:/Dev-Cpp/MinGW64/bin/gcc.exe';
+const lessons=Object.values(L.catalog),cases=[];
+const words=['','a','b','aa','ab','aba','abab','aaaa','a! a! '];
+for(const text of words)for(const pattern of words)for(const operation of ['bf','kmp','kmpval','buildNext','buildNextval'])for(const overlap of [false,true])for(const all of [false,true])cases.push({operation,text,pattern,other:'',replacement:'',overlap,all});
+for(const operation of lessons.map(l=>l.key).filter(x=>!['bf','kmp','kmpval','buildNext','buildNextval'].includes(x)))for(const text of words)for(const other of ['','xy','aaa'])for(const position of [0,1,text.length,text.length+1,text.length+2])for(const length of [-1,0,1,text.length+1])cases.push({operation,text,other,pattern:other,replacement:'bbb',position,length});
+const source=`${L.declaration(8)}
+${lessons.map(l=>l.source.join('\n').replace('int Run(',`int ${l.key}(`)).join('\n')}
+void Read(Str *s) { int x; scanf("%d",&s->length); for(int i=0;i<s->length;i++){scanf("%d",&x);s->data[i]=(unsigned char)x;} }
+int main(void){int code,p,k,all,overlap;while(scanf("%d%d%d%d%d",&code,&p,&k,&all,&overlap)==5){Str S={0},T={0},P={0},R={0};Read(&S);Read(&T);Read(&P);Read(&R);int out[M+1],next[M+1],nextval[M+1],count=0,pre=0,match=0,result=0;for(int i=0;i<=M;i++)out[i]=next[i]=nextval[i]=-777;
+switch(code){${lessons.map((l,i)=>`case ${i}:result=${l.key}(&S,&T,&P,&R,p,k,all,overlap,out,&count,next,nextval,&pre,&match);break;`).join('\n')}}
+printf("%d %d %d %d %d",result,pre,match,count,S.length);for(int i=0;i<S.length;i++)printf(" %d",S.data[i]);for(int i=0;i<count;i++)printf(" %d",out[i]);for(int i=0;i<=P.length;i++)printf(" %d",next[i]);for(int i=0;i<=P.length;i++)printf(" %d",nextval[i]);puts("");}return 0;}`;
+fs.writeFileSync(path.join(dir,'string.c'),source);let r=spawnSync(gcc,['-std=c11','-Wall','-Wextra','-O0',path.join(dir,'string.c'),'-o',path.join(dir,'string.exe')],{encoding:'utf8',maxBuffer:8e6});assert.equal(r.status,0,r.stderr);
+const input=cases.map(o=>[lessons.findIndex(l=>l.key===o.operation),o.position??1,o.length??0,Number(o.all??true),Number(o.overlap??true),...[o.text,o.other,o.pattern,o.replacement].flatMap(x=>[x.length,...[...x].map(c=>c.charCodeAt(0))])].join(' ')).join('\n')+'\n';
+r=spawnSync(path.join(dir,'string.exe'),[],{encoding:'utf8',input,maxBuffer:16e6});assert.equal(r.status,0,r.stderr);const rows=r.stdout.trim().split(/\r?\n/);assert.equal(rows.length,cases.length);
+rows.forEach((row,i)=>{const s=L.generate({capacity:8,...cases[i]}).result,v=s.vars;const expected=[s.result,v.pre,v.match,v.count,s.S.length,...s.S.data.slice(0,s.S.length).map(c=>c.charCodeAt(0)),...s.out.slice(0,v.count),...s.next.map(x=>x??-777),...s.nextval.map(x=>x??-777)];assert.deepEqual(row.split(' ').map(Number),expected,JSON.stringify(cases[i]));});console.log(`String same-source C parity: ${cases.length} cases passed (result, strings, all positions, next/nextval, both counters)`);
