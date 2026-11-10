@@ -2,10 +2,13 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>栈与队列实验室 · 知序</title><link rel="icon" href="data:,">
+  <title>栈与队列实验室 · 知序</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23187c68'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-size='40' fill='white'%3E序%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="linked.css"><link rel="stylesheet" href="stack-queue.css">
-  <script defer src="js/engine.js"></script><script defer src="js/stack-queue-engine.js"></script><script defer src="js/stack-queue-content.js"></script><script defer src="js/stack-queue-app.js?v=0.3.0"></script>
-</head>
+  <link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="studio.css">
+<script defer src="js/site-shell.js"></script>
+<script defer src="js/engine.js"></script><script defer src="js/stack-queue-engine.js"></script><script defer src="js/stack-queue-content.js"></script><script defer src="js/stack-queue-app.js"></script>
+<meta name="description" content="知序 408 学习实验室：原创讲解、C 代码与执行后状态同步演示，支持离线学习。"><meta name="theme-color" content="#187c68"></head>
 <body class="linked-page">
   <aside class="sidebar">
     <a class="brand" href="index.html"><span class="brand-icon">序</span><span>知序<span class="brand-sub">DATA STRUCTURE LAB</span></span></a>
@@ -14,7 +17,7 @@
       <a class="future-sub lesson-link" href="index.html">顺序表 <span>已开放 ↗</span></a><a class="future-sub lesson-link" href="linked.html">链表 <span>已开放 ↗</span></a>
       <button class="chapter current" data-view="demo"><span class="chapter-number">02</span><span>栈与队列<small>边界清楚，进出有序</small></span></button>
       <div class="linked-nav"><button data-kind="arrayStack">顺序栈</button><button data-kind="linkedStack">链栈</button><button data-kind="circularQueue">循环队列</button><button data-kind="linkedQueue">链式队列</button></div>
-      <button class="chapter planned" data-view="compare">结构对比</button><button class="chapter planned" data-view="pitfalls">常见错误</button>
+      <button class="chapter" data-view="compare">结构对比</button><button class="chapter" data-view="pitfalls">常见错误</button>
     </nav>
     <div class="side-bottom"><div class="side-note">边界先于操作。<p>读懂 top、front 与 rear。</p></div><button id="clear-progress" class="text-button">清除本章学习记录</button></div>
   </aside>
@@ -23,7 +26,7 @@
     <main>
       <section class="page-intro"><div><div class="eyebrow">CHAPTER 02 <span>受限的线性结构</span></div><h1>栈与队列<span>从哪里进入，又从哪里离开？</span></h1><p>跟随每一次边界变化，理解后进先出、先进先出与空满判断。</p></div><div class="lesson-progress"><span id="completed-count">0 / 22</span><small>操作演示已完成</small><div class="progress-track"><div id="completion-fill"></div></div></div></section>
       <div class="tabs linked-tabs" role="tablist" aria-label="学习视图">
-        <button id="tab-concept" role="tab" aria-controls="view-concept" data-view="concept">概念导读</button><button id="tab-demo" role="tab" aria-controls="view-demo" data-view="demo" class="active">逐行演示 <span class="tab-mark">LAB</span></button><button id="tab-compare" role="tab" aria-controls="view-compare" data-view="compare">结构对比</button><button id="tab-quiz" role="tab" aria-controls="view-quiz" data-view="quiz">自测练习</button><button id="tab-pitfalls" role="tab" aria-controls="view-pitfalls" data-view="pitfalls">常见错误</button>
+        <button id="tab-concept" role="tab" aria-controls="view-concept" data-view="concept" aria-selected="false" tabindex="-1">概念导读</button><button id="tab-demo" role="tab" aria-controls="view-demo" data-view="demo" class="active" aria-selected="true" tabindex="0">逐行演示 <span class="tab-mark">LAB</span></button><button id="tab-compare" role="tab" aria-controls="view-compare" data-view="compare" aria-selected="false" tabindex="-1">结构对比</button><button id="tab-quiz" role="tab" aria-controls="view-quiz" data-view="quiz" aria-selected="false" tabindex="-1">自测练习</button><button id="tab-pitfalls" role="tab" aria-controls="view-pitfalls" data-view="pitfalls" aria-selected="false" tabindex="-1">常见错误</button>
       </div>
       <section id="view-demo" class="view" role="tabpanel" aria-labelledby="tab-demo">
         <div class="kind-heading"><div class="segmented"><button data-kind="arrayStack">顺序栈</button><button data-kind="linkedStack">链栈</button><button data-kind="circularQueue">循环队列</button><button data-kind="linkedQueue">链式队列</button></div><span class="hint-text">原创 C 示例 · 可离线使用</span></div>
@@ -46,7 +49,7 @@
         <section class="panel prose-panel"><h3>结果与状态</h3><p id="result-details"></p><button id="reuse-result" class="text-button">用结果继续操作 →</button></section>
         <details class="panel history-panel"><summary>执行记录（点击跳转）</summary><div id="history-list"></div></details>
       </section>
-      <section id="view-concept" class="view content-view" role="tabpanel" aria-labelledby="tab-concept" hidden><div class="section-heading"><h2>先分清边界，再理解进出</h2><p>原创内容；未提供教材，不声称复刻王道 2027 或已完整核对当年考纲。</p></div><div id="concept-list" class="concept-grid"></div><article class="panel prose-panel"><h3>支持范围</h3><p>四类结构提供初始化、判空、读取、入、出操作；两类数组结构另有判满。共享栈、双端队列、表达式求值、表达式求值和图等为后续规划；树与递归章节已独立开放；串章节已独立开放。输入中的重复值是独立元素，不去重。</p></article></section>
+      <section id="view-concept" class="view content-view" role="tabpanel" aria-labelledby="tab-concept" hidden><div class="section-heading"><h2>先分清边界，再理解进出</h2><p>原创内容；未提供教材，不声称复刻王道 2027 或已完整核对当年考纲。</p></div><div id="concept-list" class="concept-grid"></div><article class="panel prose-panel"><h3>支持范围</h3><p>四类结构提供初始化、判空、读取、入、出操作；两类数组结构另有判满。共享栈、双端队列和表达式求值等为后续规划；树与递归章节已独立开放；串章节已独立开放。输入中的重复值是独立元素，不去重。</p></article></section>
       <section id="view-compare" class="view content-view" role="tabpanel" aria-labelledby="tab-compare" hidden><div class="section-heading"><h2>相同逻辑，不同存储边界</h2></div><div id="compare-list" class="comparison-grid"></div></section>
       <section id="view-pitfalls" class="view content-view" role="tabpanel" aria-labelledby="tab-pitfalls" hidden><div class="section-heading"><h2>常见错误与原因</h2></div><div id="pitfall-list" class="concept-grid"></div></section>
       <section id="view-quiz" class="view content-view" role="tabpanel" aria-labelledby="tab-quiz" hidden><div class="section-heading"><h2>检查你对边界的理解</h2><p>12 道原创题；答错后可重选，每题都有解析。</p></div><div id="quiz-list" class="quiz-list"></div><div class="quiz-summary panel"><strong id="quiz-score"></strong><button id="quiz-reset" class="secondary">重新练习</button></div></section>

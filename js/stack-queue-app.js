@@ -110,7 +110,7 @@
       if (predictionTarget !== null) return;
       predictionTarget = index + 1; const target = trace.steps[predictionTarget];
       const distractors = ['交换栈底和队头元素', '清空全部数组和节点', '不读取任何变量，自动完成全部操作'].filter(x => x !== target.action);
-      const choices = [target.action, ...distractors.slice(0, 2)]; const shift = predictionTarget % choices.length; choices.push(...choices.splice(0, shift));
+      const choices = [target.action, ...distractors.slice(0, 2)]; choices.splice(0,choices.length,...SiteShell.shuffleChoices(choices));
       $('prediction-options').innerHTML = choices.map(x => `<button class="choice" data-correct="${x === target.action}">${esc(x)}</button>`).join('');
       $('prediction-feedback').textContent = ''; $('prediction-reveal').hidden = true; $('prediction').hidden = false;
     } else { clearTransient(); index++; render(); }
@@ -133,7 +133,7 @@
   }
   $('play').onclick = play; $('speed').onchange = () => { const running = timer !== null; pause(); if (running) play(); };
   $('predict-toggle').onchange = () => { pause(); clearTransient(); render(); }; $('breakpoint').onchange = () => { pause(); clearTransient(); };
-  document.addEventListener('keydown', e => { if (!$('view-demo').hidden && !e.ctrlKey && !e.altKey && !e.metaKey && !e.target.closest('input,select,button,a,summary,textarea')) { if (e.key === 'ArrowRight') { e.preventDefault(); next(); } else if (e.key === 'ArrowLeft') { e.preventDefault(); jump(index - 1); } else if (e.code === 'Space') { e.preventDefault(); play(); } } });
+  document.addEventListener('keydown', e => { if (!$('view-demo').hidden && !e.ctrlKey && !e.altKey && !e.metaKey && !e.target.closest('input,select,a,summary,textarea')) { if (e.key === 'ArrowRight') { e.preventDefault(); next(); } else if (e.key === 'ArrowLeft') { e.preventDefault(); jump(index - 1); } else if (e.code === 'Space') { e.preventDefault(); play(); } } });
   $('reuse-result').onclick = () => {
     const values = Lab.inspect(trace.steps[index]); const front = trace.steps[index].vars.front;
     if (trace.lesson.op === 'init') { choose(trace.lesson.kind + '_add'); }

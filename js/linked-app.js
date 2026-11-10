@@ -103,7 +103,7 @@
   }
   function highlight(line) {
     if (line.trim().startsWith('/*')) return `<span class="code-comment">${escape(line)}</span>`;
-    return escape(line).replace(/\b(bool|int|const|void|if|while|for|return|true|false|NULL|Node|DNode)\b|\b(\d+)\b/g, (all, keyword) => `<span class="token-${keyword ? 'keyword' : 'number'}">${all}</span>`);
+    return SiteShell.highlightC(line, /\b(bool|int|const|void|if|while|for|return|true|false|NULL|Node|DNode)\b|\b(\d+)\b/g);
   }
   $('input-form').addEventListener('submit', event => { event.preventDefault(); generate(); });
   ['array-input', 'position-input', 'value-input', 'fail-input'].forEach(id => $(id).addEventListener('input', () => { pause(); hidePrediction(); $('input-dirty').hidden = false; }));
@@ -234,11 +234,12 @@
   $('breakpoint').addEventListener('change', () => { pause(); clearStop(); });
   $('predict-toggle').addEventListener('change', () => { pause(); hidePrediction(); clearStop(); render(); });
   function askPrediction() {
+    if (predictionTarget !== null) return;
     pause(); predictionTarget = index + 1;
     const correct = trace.steps[predictionTarget].action;
     const available = [...new Set(trace.steps.slice(1).map(s => s.action))].filter(text => text !== correct);
     const choices = [correct, ...available.slice(0, 2)];
-    for (let i = choices.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [choices[i], choices[j]] = [choices[j], choices[i]]; }
+    choices.splice(0, choices.length, ...SiteShell.shuffleChoices(choices));
     $('prediction-options').replaceChildren(); $('prediction-feedback').textContent = ''; $('prediction-reveal').hidden = true;
     choices.forEach(text => {
       const button = document.createElement('button'); button.className = 'choice'; button.textContent = text;
@@ -265,7 +266,7 @@
     const anchor = document.createElement('a'); anchor.href = url; anchor.download = `${trace.lesson.fn}.c`; document.body.append(anchor); anchor.click(); anchor.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
   });
   document.addEventListener('keydown', event => {
-    if (['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON', 'SUMMARY', 'A'].includes(event.target.tagName) || event.target.closest('[data-node]') || $('view-demo').hidden || !$('prediction').hidden || event.ctrlKey || event.altKey || event.metaKey) return;
+    if (['INPUT', 'SELECT', 'TEXTAREA', 'SUMMARY', 'A'].includes(event.target.tagName) || event.target.closest('[data-node]') || $('view-demo').hidden || !$('prediction').hidden || event.ctrlKey || event.altKey || event.metaKey) return;
     if (event.key === 'ArrowRight') { event.preventDefault(); pause(); advance(); }
     if (event.key === 'ArrowLeft') { event.preventDefault(); goTo(index - 1); }
     if (event.code === 'Space' && !$('play').disabled) { event.preventDefault(); $('play').click(); }

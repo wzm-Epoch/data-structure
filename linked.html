@@ -6,8 +6,11 @@
   <title>链表实验室 · 知序</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23187c68'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-size='40' fill='white'%3E序%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="linked.css">
-  <script defer src="js/engine.js"></script><script defer src="js/linked-engine.js"></script><script defer src="js/linked-content.js"></script><script defer src="js/linked-app.js"></script>
-</head>
+  <link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="studio.css">
+<script defer src="js/site-shell.js"></script>
+<script defer src="js/engine.js"></script><script defer src="js/linked-engine.js"></script><script defer src="js/linked-content.js"></script><script defer src="js/linked-app.js"></script>
+<meta name="theme-color" content="#187c68"></head>
 <body class="linked-page">
   <aside class="sidebar">
     <a class="brand" href="index.html" aria-label="知序首页"><span class="brand-icon">序</span><span>知序<span class="brand-sub">DATA STRUCTURE LAB</span></span></a>
@@ -17,8 +20,8 @@
       <a class="future-sub lesson-link" href="index.html">顺序表 <span>已开放 ↗</span></a>
       <button class="subchapter linked-current" data-view="demo">链表 <span class="mini-tag">学习中</span></button>
       <div class="linked-nav"><button data-kind="single">单链表 <span>8 项</span></button><button data-kind="double">双链表 <span>2 项</span></button><button data-kind="circular">循环单链表 <span>3 项</span></button><button data-experiment>插入错序实验 <span>LAB</span></button></div>
-      <button class="chapter planned" data-view="compare"><span class="chapter-number">↔</span><span>链表结构对比</span></button>
-      <button class="chapter planned" data-view="pitfalls"><span class="chapter-number">!</span><span>常见易错点</span></button>
+      <button class="chapter" data-view="compare"><span class="chapter-number">↔</span><span>链表结构对比</span></button>
+      <button class="chapter" data-view="pitfalls"><span class="chapter-number">!</span><span>常见易错点</span></button>
       <a class="chapter planned lesson-link" href="index.html"><span class="chapter-number">…</span><span>完整学习路线</span><span class="future">↗</span></a>
     </nav>
     <div class="side-bottom"><div class="side-note"><span class="status-dot"></span> 连接变化，逐句看清。<p>先分清指针，再理解链表。</p></div><button id="clear-progress" class="text-button">清除链表学习记录</button></div>
@@ -28,11 +31,11 @@
     <main>
       <section class="page-intro"><div><div class="eyebrow">CHAPTER 01 <span>线性表的链式表示</span></div><h1>链表<span>数据不必相邻，连接自有顺序。</span></h1><p>跟随每一次指向变化，理解节点如何接入、断开、逆置与释放。</p></div><div class="lesson-progress"><span id="completed-count">0 / 13</span><small>算法演示已完成</small><div class="progress-track"><div id="completion-fill"></div></div></div></section>
       <div class="tabs linked-tabs" role="tablist" aria-label="链表学习视图">
-        <button role="tab" id="tab-concept" aria-controls="view-concept" data-view="concept" aria-selected="false">概念导读</button>
-        <button role="tab" id="tab-demo" aria-controls="view-demo" data-view="demo" aria-selected="true" class="active">逐行演示 <span class="tab-mark">LAB</span></button>
-        <button role="tab" id="tab-compare" aria-controls="view-compare" data-view="compare" aria-selected="false">结构对比</button>
-        <button role="tab" id="tab-quiz" aria-controls="view-quiz" data-view="quiz" aria-selected="false">自测练习</button>
-        <button role="tab" id="tab-pitfalls" aria-controls="view-pitfalls" data-view="pitfalls" aria-selected="false">易错实验</button>
+        <button role="tab" id="tab-concept" aria-controls="view-concept" data-view="concept" aria-selected="false" tabindex="-1">概念导读</button>
+        <button role="tab" id="tab-demo" aria-controls="view-demo" data-view="demo" aria-selected="true" class="active" tabindex="0">逐行演示 <span class="tab-mark">LAB</span></button>
+        <button role="tab" id="tab-compare" aria-controls="view-compare" data-view="compare" aria-selected="false" tabindex="-1">结构对比</button>
+        <button role="tab" id="tab-quiz" aria-controls="view-quiz" data-view="quiz" aria-selected="false" tabindex="-1">自测练习</button>
+        <button role="tab" id="tab-pitfalls" aria-controls="view-pitfalls" data-view="pitfalls" aria-selected="false" tabindex="-1">易错实验</button>
       </div>
       <section id="view-demo" class="view" role="tabpanel" aria-labelledby="tab-demo">
         <div class="kind-heading"><div class="segmented" aria-label="链表类型"><button data-kind="single" aria-pressed="true" class="selected">单链表</button><button data-kind="double" aria-pressed="false">双链表</button><button data-kind="circular" aria-pressed="false">循环单链表</button></div><span class="hint-text">统一带头节点 · 原创 C 示例</span></div>

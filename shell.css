@@ -1,0 +1,14 @@
+/* Shared reading and navigation baseline; loaded after chapter styles. */
+.chapter-switch{display:flex;gap:12px;overflow-x:auto;white-space:nowrap;max-width:100%}
+.quick-examples{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+#log{max-height:320px;overflow:auto}#log .log-row{display:block;width:100%;text-align:left;padding:8px;background:transparent;border:0;border-bottom:1px solid #dfe7e2;cursor:pointer}#log .log-row.active{background:#e1f1e9}
+.chapter-switch a[aria-current="page"]{font-weight:700;color:var(--green,#187c68)}
+.mobile-clear{display:none}.storage-notice{padding:12px;background:#fff3d6;color:#634500}
+.side-caption,.brand-sub,.lesson-progress small,.course-label,.page-intro p,.hint-text,.takeaway p,.variable span,.legend,.roadmap-card p,footer{font-size:12px}
+@media(max-width:720px){.mobile-clear{display:inline-block;flex-shrink:0}footer{flex-wrap:wrap}.topbar{height:auto;min-height:44px;flex-wrap:wrap;gap:8px;padding-top:8px;padding-bottom:8px}.chapter-switch{width:100%;padding-bottom:8px}.page-intro p,.lesson-progress small,.hint-text,.takeaway p,.variable span,.legend,.roadmap-card p,.course-label,.brand-sub,footer{font-size:12px}}
+
+.chapter-switch a{font-size:12px;color:#5c6b77}
+.sidebar{overflow-y:auto}.sidebar .chapters,.sidebar .side-bottom{flex-shrink:0}
+:focus-visible{outline:2px solid #187c68;outline-offset:3px}
+.lesson-brief p,.complexity-note p,.graph-note,.scenario-row>span,.code-comment{color:#5c6b77}
+.lesson-brief p,.complexity-note p,.graph-note,.scenario-row>span,.hint-text{font-size:12px}

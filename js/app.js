@@ -7,13 +7,12 @@
   try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}') || {}; } catch (_) { /* Offline storage may be unavailable. */ }
   let completed = new Set(Array.isArray(saved.completed) ? saved.completed.filter(x => Lab.names[x]) : []);
   let mastered = new Set(Array.isArray(saved.mastered) ? saved.mastered.filter(x => Number.isInteger(x) && x >= 0 && x < 5) : []);
-  let operation = 'insert', trace, index = 0, timer = null, predictionTarget = null;
+  let operation = 'insert', trace, index = 0, timer = null, predictionTarget = null, stoppedBefore = null;
   function persist() {
     try { localStorage.setItem(storageKey, JSON.stringify({ completed: [...completed], mastered: [...mastered] })); } catch (_) { /* Learning still works without persistence. */ }
   }
   const escape = text => String(text).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const highlighted = line => escape(line).replace(/\b(bool|int|const|if|return|for|true|false)\b|\b(\d+)\b|\b(ListInsert|ListDelete|GetElem)\b/g,
-    (whole, keyword, number, fn) => `<span class="token-${keyword ? 'keyword' : number ? 'number' : 'function'}">${whole}</span>`);
+  const highlighted = line => SiteShell.highlightC(line, /\b(bool|int|const|if|return|for|true|false)\b|\b(\d+)\b|\b(ListInsert|ListDelete|GetElem)\b/g);
 
   function saveProgress() {
     $('completed-count').textContent = `${completed.size} / 3`;
@@ -49,9 +48,9 @@
 
   function readInteger(id, label) {
     const raw = $(id).value.trim();
-    if (!/^[+-]?\d+$/.test(raw)) throw new Error(`${label}必须填写整数。`);
+    if (!/^[+-]?\d+$/.test(raw)) throw new Error(`${label} 必须填写整数。`);
     const value = Number(raw);
-    if (!Number.isInteger(value) || value < -2147483648 || value > 2147483647) throw new Error(`${label}必须在 32 位整数范围内。`);
+    if (!Number.isInteger(value) || value < -2147483648 || value > 2147483647) throw new Error(`${label} 必须在 32 位整数范围内。`);
     return value;
   }
   function generate() {
@@ -60,7 +59,9 @@
       const nextTrace = Lab.generate({ operation, values: Lab.parseInput($('array-input').value),
         position: readInteger('position-input', '位置 i'), value: operation === 'insert' ? readInteger('value-input', '插入值 e') : 0,
         capacity: Number($('capacity-input').value) });
-      trace = nextTrace; index = 0;
+      trace = nextTrace; index = 0; stoppedBefore = null;
+      $('pause-message').textContent = '';
+      SiteShell.windowLog($('log'), trace.steps, index, goTo);
       $('input-error').hidden = true; $('input-dirty').hidden = true;
       $('source-name').textContent = { insert: 'ListInsert', delete: 'ListDelete', access: 'GetElem' }[operation];
       $('definition-code').textContent = Lab.declaration(trace.capacity);
@@ -132,6 +133,8 @@
     $('play').disabled = s.done || $('predict-toggle').checked;
     $('timeline').value = index; $('step-counter').textContent = `${index} / ${trace.steps.length - 1}`;
     $('move-counter').textContent = `移动 ${s.moves} 次`;
+    $('reuse-result').disabled = !s.done || !s.result;
+    SiteShell.windowLog($('log'), trace.steps, index, goTo);
     if (s.done) {
       pause();
       if (s.result) { completed.add(trace.operation); saveProgress(); }
@@ -141,6 +144,7 @@
     const svg = $('move-arrow');
     if (!move) { svg.innerHTML = ''; return; }
     const width = $('memory-cells').getBoundingClientRect().width;
+    if (width <= 0) return;
     const gap = parseFloat(getComputedStyle($('memory-cells')).columnGap) || 6;
     const slot = (width - gap * (trace.capacity - 1)) / trace.capacity;
     const x1 = move.from * (slot + gap) + slot / 2, x2 = move.to * (slot + gap) + slot / 2;
@@ -148,13 +152,18 @@
     svg.innerHTML = `<defs><marker id="arrow-head" markerWidth="6" markerHeight="6" refX="4" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#4e9c79"/></marker></defs><path d="M${x1},33 Q${(x1 + x2) / 2},-13 ${x2},29" fill="none" stroke="#4e9c79" stroke-width="1.8" marker-end="url(#arrow-head)"/><text x="${(x1 + x2) / 2}" y="11" font-size="9" fill="#4d8f71" text-anchor="middle">复制</text>`;
   }
   window.addEventListener('resize', () => { if (trace) drawArrow(trace.steps[index].move); });
-  function goTo(n) { pause(); hidePrediction(); index = Math.max(0, Math.min(n, trace.steps.length - 1)); render(); }
-  function advance() {
+  function goTo(n) { pause(); hidePrediction(); stoppedBefore = null; $('pause-message').textContent = ''; index = Math.max(0, Math.min(n, trace.steps.length - 1)); render(); }
+  function advance(auto = false) {
     if (index >= trace.steps.length - 1) return;
     if ($('predict-toggle').checked) { askPrediction(); return; }
-    hidePrediction(); index++; render();
+    const next = trace.steps[index + 1], type = $('breakpoint').value;
+    const stop = type === 'condition' ? next.condition !== null : type === 'move' ? !!next.move : type === 'return' ? next.done : false;
+    if (auto && stop && stoppedBefore !== index + 1) {
+      pause(); stoppedBefore = index + 1; $('pause-message').textContent = '已在关键步骤前暂停，再次播放可执行此步。'; return;
+    }
+    stoppedBefore = null; $('pause-message').textContent = ''; hidePrediction(); index++; render();
   }
-  $('next').addEventListener('click', advance);
+  $('next').addEventListener('click', () => advance());
   $('previous').addEventListener('click', () => goTo(index - 1));
   $('reset').addEventListener('click', () => goTo(0));
   $('timeline').addEventListener('input', event => goTo(Number(event.target.value)));
@@ -162,18 +171,37 @@
     if (timer !== null) { pause(); return; }
     if (index >= trace.steps.length - 1 || $('predict-toggle').checked) return;
     hidePrediction(); $('play').textContent = 'Ⅱ 暂停';
-    timer = setInterval(advance, Number($('speed').value));
+    timer = setInterval(() => advance(true), Number($('speed').value));
   });
   $('speed').addEventListener('change', () => {
     if (timer !== null) { pause(); $('play').click(); }
   });
   $('predict-toggle').addEventListener('change', () => { pause(); hidePrediction(); render(); });
+  $('breakpoint').addEventListener('change', () => { pause(); stoppedBefore = null; $('pause-message').textContent = ''; });
+  document.querySelectorAll('[data-preset]').forEach(button => button.addEventListener('click', () => {
+    const preset = button.dataset.preset, capacity = Number($('capacity-input').value);
+    $('array-input').value = preset === 'empty' ? '' : preset === 'full' ? Array.from({length:capacity}, (_, i) => i + 1).join(', ') : '12, 25, 37, 48, 59';
+    $('position-input').value = preset === 'invalid' ? '0' : preset === 'empty' ? '1' : '3';
+    $('value-input').value = '66'; generate();
+  }));
+  $('reuse-result').addEventListener('click', () => {
+    const s = trace.steps[index]; if (!s.done || !s.result) return;
+    $('array-input').value = s.memory.slice(0, s.length).join(', ');
+    generate();
+  });
+  $('download').addEventListener('click', () => {
+    const source = Lab.declaration(trace.capacity) + '\n\n' + trace.source.join('\n') + '\n';
+    const url = URL.createObjectURL(new Blob([source], {type:'text/plain;charset=utf-8'}));
+    const a = document.createElement('a'); a.href = url; a.download = 'sequence-' + trace.operation + '.c'; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
   function askPrediction() {
+    if (predictionTarget !== null) return;
     pause();
     predictionTarget = index + 1;
     const correct = trace.steps[predictionTarget].action;
     const distractors = [...new Set(trace.steps.slice(1).map(s => s.action))].filter(x => x !== correct);
-    const choices = [correct, ...distractors.slice(0, 2)].sort(() => Math.random() - .5);
+    const choices = SiteShell.shuffleChoices([correct, ...distractors.slice(0, 2)]);
     $('prediction-options').replaceChildren(); $('prediction-feedback').textContent = ''; $('prediction-reveal').hidden = true;
     for (const choice of choices) {
       const button = document.createElement('button'); button.className = 'choice'; button.textContent = choice;
@@ -192,7 +220,7 @@
   $('prediction-reveal').addEventListener('click', () => { if (predictionTarget !== null) goTo(predictionTarget); });
   $('go-quiz').addEventListener('click', () => showView('quiz'));
   document.addEventListener('keydown', event => {
-    if (['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON', 'SUMMARY'].includes(event.target.tagName) || $('view-demo').hidden || !$('prediction').hidden || event.ctrlKey || event.altKey || event.metaKey) return;
+    if (['INPUT', 'SELECT', 'TEXTAREA', 'SUMMARY'].includes(event.target.tagName) || $('view-demo').hidden || !$('prediction').hidden || event.ctrlKey || event.altKey || event.metaKey) return;
     if (event.key === 'ArrowRight') { event.preventDefault(); pause(); advance(); }
     if (event.key === 'ArrowLeft') { event.preventDefault(); goTo(index - 1); }
     if (event.code === 'Space') { event.preventDefault(); if (!$('play').disabled) $('play').click(); }
