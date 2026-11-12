@@ -30,7 +30,7 @@ test('C高亮：单引号实体不被数字高亮破坏，HTML字符始终转义
   assert(!html.includes('&#<span'));assert(!html.includes("'<"));
 });
 test('九页壳层：共享脚本先加载、移动清除、页签关联、离线资源存在',()=>{
-  for(const name of ['index','linked','stack-queue','string','tree','graph','search','sort','algorithm']) {
+  for(const name of ['sequence','linked','stack-queue','string','tree','graph','search','sort','algorithm']) {
     const html=fs.readFileSync(path.join(root,name+'.html'),'utf8');
     const scripts=[...html.matchAll(/<script[^>]*src="([^"]+)"/g)].map(m=>m[1]);
     assert.equal(scripts[0],'js/site-shell.js',name);

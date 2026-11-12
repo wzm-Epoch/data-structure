@@ -5,7 +5,7 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const root = path.resolve(__dirname, '..');
-const pages = ['index','linked','stack-queue','string','tree','graph','search','sort','algorithm'];
+const pages = ['sequence','linked','stack-queue','string','tree','graph','search','sort','algorithm'];
 (async () => {
   const browser = await chromium.launch({headless:true, ...(process.env.CHROMIUM_PATH ? {executablePath:process.env.CHROMIUM_PATH} : {channel:'chrome'})});
   const results = [];
@@ -47,7 +47,7 @@ const pages = ['index','linked','stack-queue','string','tree','graph','search','
         assert(await page.locator('#reveal,#prediction-reveal').isVisible());
       }
       await predict.uncheck();
-      const otherKey=name==='index'?'zhixu-tree-v1':'zhixu-learning-v1';
+      const otherKey=name==='sequence'?'zhixu-tree-v1':'zhixu-learning-v1';
       await page.evaluate(key=>localStorage.setItem(key,'keep-other-chapter'),otherKey);
       await page.locator('#mobile-clear').click();
       assert.equal(await page.evaluate(key=>localStorage.getItem(key),otherKey),'keep-other-chapter',name+' independent progress');
@@ -57,7 +57,7 @@ const pages = ['index','linked','stack-queue','string','tree','graph','search','
     }
     {
       const context=await browser.newContext({acceptDownloads:true}),page=await context.newPage();
-      await page.goto(pathToFileURL(path.join(root,'index.html')).href);
+      await page.goto(pathToFileURL(path.join(root,'sequence.html')).href);
       await page.click('[data-preset="empty"]');
       await page.locator('#timeline').evaluate(el=>{el.value=el.max;el.dispatchEvent(new Event('input'));});
       assert(await page.locator('#reuse-result').isEnabled());
@@ -72,7 +72,7 @@ const pages = ['index','linked','stack-queue','string','tree','graph','search','
       await page.click('#play');await page.locator('#pause-message').filter({hasText:'已在关键步骤前暂停'}).waitFor();
       const before=Number(await page.locator('#timeline').inputValue());await page.click('#next');
       assert.equal(Number(await page.locator('#timeline').inputValue()),before+1);
-      results.push({page:'index',presets:true,reuse:true,download:true,fullFailure:true,breakpoint:true});
+      results.push({page:'sequence',presets:true,reuse:true,download:true,fullFailure:true,breakpoint:true});
       await context.close();
     }
     // Distinguish normal zero-valued results from actual operation failure.

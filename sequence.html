@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="面向 408 的数据结构交互学习工具：通过代码、结构与变量同步演示，理解顺序表。">
+  <title>知序 · 数据结构学习实验室</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23187c68'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-size='40' fill='white'%3E序%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="studio.css">
+<script defer src="js/site-shell.js"></script>
+<script defer src="js/engine.js"></script>
+  <script defer src="js/app.js"></script>
+<meta name="theme-color" content="#187c68"></head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="index.html" aria-label="知序首页"><span class="brand-icon">序</span><span>知序<span class="brand-sub">DATA STRUCTURE LAB</span></span></a>
+    <div class="course-label">你的 408 学习实验室</div>
+    <div class="side-caption">学习目录 <span>01 / 08</span></div>
+    <nav class="chapters" aria-label="章节目录">
+      <button class="chapter current" data-view="demo"><span class="chapter-number">01</span><span>线性表<small>从连续存储开始</small></span><span class="chapter-dot"></span></button>
+      <div class="subchapter">顺序表 <span class="mini-tag">学习中</span></div>
+      <a class="future-sub" href="linked.html" style="text-decoration:none">链表实验室 <span>已开放 ↗</span></a>
+      <a class="chapter lesson-link" href="stack-queue.html"><span class="chapter-number">02</span><span>栈与队列</span><span class="future">已开放 ↗</span></a>
+      <a class="chapter" href="string.html"><span class="chapter-number">03</span><span>串与模式匹配</span><span class="future">已开放 ↗</span></a>
+      <a class="chapter" href="tree.html"><span class="chapter-number">04</span><span>树与二叉树</span><span class="future">已开放</span></a>
+      <a class="chapter" href="graph.html"><span class="chapter-number">05</span><span>图</span><span class="future">已开放 ↗</span></a>
+      <a class="chapter" href="search.html"><span class="chapter-number">06</span><span>查找</span><span class="future">已开放 ↗</span></a>
+      <a class="chapter" href="sort.html"><span class="chapter-number">07</span><span>排序</span><span class="future">已开放 ↗</span></a>
+      <a class="chapter" href="algorithm.html"><span class="chapter-number">08</span><span>算法设计与应用</span><span class="future">已开放 ↗</span></a>
+    </nav>
+    <div class="side-bottom"><div class="side-note"><span class="status-dot"></span> 把每一步，看明白。<p>先理解变化，再记住算法。</p></div><button id="clear-progress" class="text-button">清除本机学习记录</button></div>
+  </aside>
+
+  <div class="workspace">
+    <header class="topbar"><div>数据结构 <span class="breadcrumb">/</span> 线性表 <span class="breadcrumb">/</span> <strong>顺序表</strong></div><nav class="chapter-switch"><a href="linked.html" class="text-button">链表实验室 →</a> <a href="stack-queue.html" class="text-button">栈与队列 →</a><a href="string.html">串与模式匹配</a><a href="tree.html">树与二叉树</a><a href="graph.html">图</a><a href="search.html">查找</a><a href="sort.html">排序</a><a href="algorithm.html">算法设计与应用</a></nav></header>
+    <main>
+      <section class="page-intro"><div><div class="eyebrow">CHAPTER 01 <span>线性表的顺序表示</span></div><h1>顺序表<span>让代码的每一步，都看得见。</span></h1><p>在连续的存储空间里，观察元素如何被读取、移动和更新。</p></div><div class="lesson-progress"><span id="completed-count">0 / 3</span><small>操作演示已完成</small><div class="progress-track"><div id="completion-fill"></div></div></div></section>
+      <div class="tabs" role="tablist" aria-label="学习视图">
+        <button role="tab" id="tab-concept" aria-controls="view-concept" aria-selected="false" data-view="concept" tabindex="-1">概念导读</button>
+        <button role="tab" id="tab-demo" aria-controls="view-demo" aria-selected="true" class="active" data-view="demo" tabindex="0">逐行演示 <span class="tab-mark">LAB</span></button>
+        <button role="tab" id="tab-quiz" aria-controls="view-quiz" aria-selected="false" data-view="quiz" tabindex="-1">自测练习</button>
+        <button role="tab" id="tab-roadmap" aria-controls="view-roadmap" aria-selected="false" data-view="roadmap" tabindex="-1">学习路线</button>
+      </div>
+
+      <section id="view-demo" class="view" role="tabpanel" aria-labelledby="tab-demo">
+        <div class="demo-heading"><div class="segmented" aria-label="选择操作"><button data-operation="insert" class="selected" aria-pressed="true">插入元素</button><button data-operation="delete" aria-pressed="false">删除元素</button><button data-operation="access" aria-pressed="false">按位查找</button></div><span class="hint-text">原创 C 示例 · 针对预置算法的语义模拟</span></div>
+        <form id="input-form" class="input-panel" novalidate>
+          <label class="array-input">初始元素 <input id="array-input" value="12, 25, 37, 48, 59" placeholder="用逗号分隔；留空为空表" autocomplete="off"></label>
+          <label>容量 <select id="capacity-input"><option value="6">6</option><option value="8" selected>8</option><option value="12">12</option></select></label>
+          <label>位置 i <input id="position-input" type="number" step="1" value="3"></label>
+          <label id="value-field">插入值 e <input id="value-input" type="number" step="1" value="66"></label>
+          <button class="primary" type="submit">生成演示 <span aria-hidden="true">↗</span></button>
+          <div id="input-error" role="alert" hidden></div>
+          <div id="input-dirty" hidden>输入已修改，点击“生成演示”后生效；下方仍显示上一次生成的演示。</div>
+        </form>
+        <div class="quick-examples" aria-label="快速试试">
+          <span>快速试试</span>
+          <button class="secondary" data-preset="default">默认例子</button>
+          <button class="secondary" data-preset="empty">空表</button>
+          <button class="secondary" data-preset="full">满表</button>
+          <button class="secondary" data-preset="invalid">非法位置</button>
+          <button id="download" class="secondary">下载当前 C 示例</button>
+          <button id="reuse-result" class="secondary" disabled>用结果继续操作</button>
+        </div>
+        <div class="lab-grid">
+          <section class="code-panel panel"><div class="panel-head"><h2><span class="tiny-icon">{ }</span> 算法代码</h2><span class="file-label">C / <span id="source-name">ListInsert</span></span></div><div class="code-note"><span class="status-dot"></span> 高亮行 = 刚执行完的语句</div><div id="code-lines" class="code-lines" aria-label="算法源代码"></div><details class="definition"><summary>查看结构体与调用前提</summary><pre id="definition-code"></pre><p>调用时 L 指向有效顺序表，0 ≤ length ≤ MAXSIZE；查找与删除的 e 指向有效输出变量。示例省略 main，下面的输入区提供初始数据。</p></details></section>
+          <section class="visual-panel panel"><div class="panel-head"><h2><span class="tiny-icon">▦</span> 存储结构</h2><span id="state-badge" class="state-badge">尚未执行</span></div>
+            <div class="visual-inner"><div class="visual-title"><div><strong>连续存储，按位访问</strong><p>位置从 1 开始，数组下标从 0 开始。</p></div><span class="memory-label">SqList</span></div>
+              <div class="memory-scroll"><div id="memory-stage" class="memory-stage"><div class="row-label">逻辑位置</div><div id="position-row" class="position-row"></div><svg id="move-arrow" class="move-arrow" height="38" aria-label="本步元素移动方向"></svg><div id="memory-cells" class="memory-cells"></div><div id="index-row" class="index-row"></div><div class="index-caption">数组下标</div></div></div>
+              <div class="legend"><span><i class="legend-logical"></i>表中元素</span><span><i class="legend-read"></i>本步读取</span><span><i class="legend-write"></i>本步写入</span><span><i class="legend-unused"></i>表外空间</span></div>
+              <div id="variables" class="variables" aria-label="执行后的变量值"></div>
+              <div class="explanation" aria-live="polite"><div class="explanation-top"><span id="step-phase">准备就绪</span><span id="step-line">初始状态</span></div><h3 id="step-action">尚未执行代码</h3><p id="step-explanation"></p><p id="step-detail" class="detail-text"></p></div>
+              <div id="prediction" class="prediction" hidden><div class="eyebrow">先想一想</div><h3>下一步，程序会做什么？</h3><div id="prediction-options"></div><p id="prediction-feedback" aria-live="polite"></p><button id="prediction-reveal" class="primary" type="button" hidden>查看这一步 →</button></div>
+            </div>
+          </section>
+        </div>
+        <section class="playback panel" aria-label="演示控制"><div class="playback-top"><div class="transport"><button id="reset" class="icon-button" title="回到初始状态" aria-label="重置演示">↺</button><button id="previous" class="secondary">← 上一步</button><button id="play" class="play-button">▶ 播放</button><button id="next" class="secondary">下一步 →</button></div><div class="playback-options"><label class="prediction-toggle"><input id="predict-toggle" type="checkbox"> 预测下一步</label><label class="speed-label">速度 <select id="speed"><option value="1800">慢速</option><option value="1000" selected>正常</option><option value="450">快速</option></select></label></div></div><div class="timeline-row"><span id="step-counter">0 / 0</span><input id="timeline" type="range" min="0" max="1" value="0" aria-label="选择执行步骤"><span id="move-counter">移动 0 次</span></div></section>
+        <div class="playback-options"><label>执行前暂停 <select id="breakpoint"><option value="">无</option><option value="condition">条件判断</option><option value="move">元素移动</option><option value="return">返回</option></select></label><span id="pause-message" role="status"></span></div>
+        <details class="panel prose-panel"><summary>执行记录 · 跳转恢复完整状态</summary><div id="log"></div></details>
+        <div class="takeaway"><span>理解这一点</span><p id="takeaway"></p><button id="go-quiz" class="text-button">做道题，检验理解 →</button></div>
+      </section>
+
+      <section id="view-concept" class="view content-view" role="tabpanel" aria-labelledby="tab-concept" hidden>
+        <div class="section-heading"><div class="eyebrow">BEFORE THE CODE</div><h2>先建立一个清晰的模型</h2><p>顺序表用数组保存元素，用 length 记录当前有多少个有效元素。</p></div>
+        <div class="concept-grid"><article class="panel concept-card"><span class="card-number">01</span><h3>逻辑位置 ≠ 数组下标</h3><p>第 1 个元素存放在 data[0]；第 i 个元素存放在 data[i - 1]。本工具统一使用这一约定。</p><div class="concept-example">第 3 个元素 <span>→</span> data[2]</div></article><article class="panel concept-card"><span class="card-number">02</span><h3>长度 ≠ 容量</h3><p>length 是当前表中的元素个数；MAXSIZE 是最多可以容纳的个数。空闲空间不属于逻辑表。</p><div class="concept-example">0 ≤ length ≤ MAXSIZE</div></article><article class="panel concept-card"><span class="card-number">03</span><h3>赋值复制 ≠ 交换</h3><p>执行 data[3] = data[2]，只改写 data[3]。data[2] 不会自动变空，中间出现重复值是正常现象。</p><div class="concept-example">读取源格子 <span>→</span> 覆盖目标格子</div></article><article class="panel concept-card"><span class="card-number">04</span><h3>删除 ≠ 清空内存</h3><p>删除元素并完成左移后，将 length 减一。尾部旧值可以继续留在数组里，但不再算作表元素。</p><div class="concept-example">有效范围：data[0 … length - 1]</div></article></div>
+        <article class="panel prose-panel"><h3>三种操作，三种观察重点</h3><p><strong>按位查找：</strong>判断位置是否合法，再直接读取 data[i - 1]；时间复杂度为 O(1)。这里的“按位查找”不是按值搜索。</p><p><strong>插入：</strong>从后向前右移第 i 到第 n 个元素，共移动 n - i + 1 个。尾插无需移动，最坏时间复杂度 O(n)。</p><p><strong>删除：</strong>保存第 i 个元素，再从前向后左移后面的元素，共移动 n - i 个。尾删无需移动，最坏时间复杂度 O(n)。</p><p>对这里的固定数组实现，三种操作的额外空间复杂度均为 O(1)；网页为方便回退保存的快照不计入所展示算法的复杂度。</p><button class="primary" data-view="demo">进入逐行演示 →</button></article>
+      </section>
+
+      <section id="view-quiz" class="view content-view" role="tabpanel" aria-labelledby="tab-quiz" hidden><div class="section-heading"><div class="eyebrow">CHECK YOUR UNDERSTANDING</div><h2>看明白，再自己判断</h2><p>原创概念练习，不是王道原题。答错后可以重新选择。</p></div><div id="quiz-list" class="quiz-list"></div><div class="quiz-summary panel"><strong id="quiz-score">已掌握 0 / 5</strong><button id="quiz-reset" class="secondary">重新练习</button></div></section>
+
+      <section id="view-roadmap" class="view content-view" role="tabpanel" aria-labelledby="tab-roadmap" hidden><div class="section-heading"><div class="eyebrow">ONE STEP AT A TIME</div><h2>从数据结构，走向算法</h2><p>当前可学习顺序表、链表、栈队列与串。<a href="linked.html">进入链表实验室 →</a> <a href="stack-queue.html">进入栈与队列 →</a> <a href="string.html">进入串章节 →</a> 树、图、查找、排序与算法设计章节均已开放，可从顶部导航进入。</p></div><div id="roadmap-list" class="roadmap-list"></div><article class="panel prose-panel"><h3>关于教材与学习记录</h3><p>你计划以王道 2027 为学习参考，当前尚未提供教材。本工具先使用原创讲解和 C 示例，不声称逐页复刻教材或已完整覆盖当年考纲。</p><p>进度只保存在当前浏览器。完成一次成功的操作演示会标记对应操作；这一标记不等于已经掌握知识点。可通过侧边栏清除记录。</p></article></section>
+      <footer><span>知序 · 理解先于记忆</span><span>首版 / 顺序表实验室 <span class="footer-divider">·</span> 教学模拟，非 C 编译器</span><button id="mobile-clear" class="text-button mobile-clear">清除本章记录</button></footer>
+    </main>
+  </div>
+  <noscript>请启用浏览器 JavaScript 后使用交互演示。</noscript>
+</body>
+</html>

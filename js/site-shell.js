@@ -72,7 +72,7 @@
 
   g.SiteShell = { shuffleChoices, highlightC, readProgress, windowLog };
   const chapters = [
-    ['index.html', '顺序表'], ['linked.html', '链表'], ['stack-queue.html', '栈队列'],
+    ['sequence.html', '顺序表'], ['linked.html', '链表'], ['stack-queue.html', '栈队列'],
     ['string.html', '串'], ['tree.html', '树'], ['graph.html', '图'],
     ['search.html', '查找'], ['sort.html', '排序'], ['algorithm.html', '算法']
   ];
@@ -81,7 +81,7 @@
     nav.setAttribute('aria-label', '章节导航'); nav.replaceChildren();
     chapters.forEach(([href, label]) => {
       const a = document.createElement('a'); a.href = href; a.textContent = label;
-      if (location.pathname.endsWith('/' + href) || href === 'index.html' && location.pathname.endsWith('/')) a.setAttribute('aria-current', 'page');
+      if (location.pathname.endsWith('/' + href)) a.setAttribute('aria-current', 'page');
       nav.append(a);
     });
   }
@@ -113,6 +113,21 @@
       focus.textContent = on ? '退出专注' : '专注演示';
     });
     tools.append(badge, focus); document.querySelector('.topbar').append(tools);
+  }
+  const chapterIds = ['linear','linear','stack','string','tree','graph','search','sort','algorithm'];
+  const currentChapter = chapters.findIndex(([href]) => location.pathname.endsWith('/' + href));
+  if (currentChapter >= 0) {
+    try { localStorage.setItem('zhixu-last-chapter-v1', chapters[currentChapter][0].replace('.html','')); } catch (_) {}
+    const quiz = document.getElementById('view-quiz');
+    if (quiz) {
+      const entry = document.createElement('div'); entry.className = 'chapter-exam-entry';
+      const text = document.createElement('div');
+      const title = document.createElement('strong'); title.textContent = '把知识放进真题里';
+      const description = document.createElement('p'); description.textContent = '2017—2026 历年题 · 题意整理、解题思路与原题来源';
+      text.append(title, description);
+      const link = document.createElement('a'); link.href = 'exams.html?chapter=' + chapterIds[currentChapter];
+      link.textContent = '本章真题练习 ↗'; entry.append(text, link); quiz.prepend(entry);
+    }
   }
   // Reorder the actual panels so visual and keyboard reading order agree.
   document.querySelectorAll('.lab-grid,.tree-lab,.search-lab,.sort-lab,.algorithm-lab').forEach(lab => {

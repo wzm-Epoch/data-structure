@@ -5,7 +5,7 @@ const path = require('node:path');
 const fs = require('node:fs');
 const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
-const pages = ['index','linked','stack-queue','string','tree','graph','search','sort','algorithm'];
+const pages = ['sequence','linked','stack-queue','string','tree','graph','search','sort','algorithm'];
 (async () => {
   const browser = await chromium.launch({headless:true, ...(process.env.CHROMIUM_PATH ? {executablePath:process.env.CHROMIUM_PATH} : {channel:'chrome'})});
   const results = [];
@@ -45,8 +45,8 @@ const pages = ['index','linked','stack-queue','string','tree','graph','search','
         else assert(geometry.vy<geometry.cy,name+' narrow stacked panels');
         assert.equal(await page.locator('.course-nav a').count(),9);
         assert.equal(await page.locator('.course-nav [aria-current="page"]').count(),1);
-        if(width===1440 && ['index','graph','algorithm'].includes(name)) await page.screenshot({path:path.join(root,'work/studio-'+name+'-desktop.png'),fullPage:true});
-        if(width===390 && name==='index') await page.screenshot({path:path.join(root,'work/studio-index-mobile.png'),fullPage:true});
+        if(width===1440 && ['sequence','graph','algorithm'].includes(name)) await page.screenshot({path:path.join(root,'work/studio-'+name+'-desktop.png'),fullPage:true});
+        if(width===390 && name==='sequence') await page.screenshot({path:path.join(root,'work/studio-index-mobile.png'),fullPage:true});
         results.push({page:name,width,focusPreservesState:true,overflow:geometry.overflow});
       }
       // Follow a new sidebar link rather than checking only its markup.

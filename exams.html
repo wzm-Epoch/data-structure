@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="知序 408 数据结构历年真题练习：按章节和年份查找真题整理，保存作答、笔记与复习记录。">
+  <meta name="theme-color" content="#f7f8f2">
+  <title>历年真题 · 知序</title>
+  <link rel="stylesheet" href="exams.css">
+  <script defer src="js/exam-engine.js"></script>
+  <script defer src="js/exam-data-early.js"></script>
+  <script defer src="js/exam-data-late.js"></script>
+  <script defer src="js/exam-app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#question-panel">跳到题目</a>
+  <header class="exam-header">
+    <a class="exam-brand" href="index.html" aria-label="知序首页"><span class="brand-mark">序</span><span>知序<small>DATA STRUCTURE LAB</small></span></a>
+    <nav aria-label="主导航"><a href="index.html">返回首页 <span aria-hidden="true">↗</span></a><a href="sequence.html">进入实验室 <span aria-hidden="true">↗</span></a></nav>
+  </header>
+  <main>
+    <section class="exam-intro">
+      <div><p class="eyebrow"><span></span> 408 EXAM PRACTICE · 2017—2026</p><h1>让知识，<em>经得起检验。</em></h1><p class="intro-copy">从一个考点出发，用一道真题，找到理解中的下一步。</p></div>
+      <div class="intro-art" aria-hidden="true"><span class="art-node n1">?</span><span class="art-node n2">A</span><span class="art-node n3">B</span><span class="art-node n4">C</span><svg viewBox="0 0 190 130"><path d="M95 30L35 95M95 30L95 95M95 30L155 95"/></svg><small>THINK · CHECK · LEARN</small></div>
+    </section>
+    <div class="coverage-note" id="source-note"><strong>关于本题库</strong><p>共130条历年真题整理，其中111条提供本地题意与思路，19条须查看来源的完整题面、配图或答案分歧。题面为独立整理，解析为学习参考，不是官方原卷全文。综合题采用自评，不自动批改代码。</p></div>
+    <p id="storage-notice" class="notice" role="status" hidden></p>
+    <section class="exam-stats" aria-label="本机练习统计">
+      <div><strong id="stat-total">—</strong><span>已整理题目</span></div>
+      <div><strong id="stat-answered">0</strong><span>已作答 / 自评</span></div>
+      <div><strong id="stat-correct">0</strong><span>核验选择题答对</span></div>
+      <div><strong id="stat-review">0</strong><span>待复习</span></div>
+      <p id="stat-detail">记录仅保存在当前浏览器</p>
+    </section>
+    <div class="exam-workspace">
+      <aside class="exam-sidebar" aria-label="筛选与题目目录">
+        <form id="exam-filters" class="filter-card" role="search">
+          <div class="section-label"><h2>找到你的练习</h2><button type="button" id="reset-filters" class="quiet-button">重置筛选</button></div>
+          <label class="search-label">搜索考点或题号<input id="exam-query" type="search" placeholder="如 KMP、2024-01" autocomplete="off"></label>
+          <div class="filter-grid">
+            <label>章节<select id="exam-chapter"><option value="">全部章节</option></select></label>
+            <label>年份<select id="exam-year"><option value="">全部年份</option></select></label>
+            <label>题型<select id="exam-type"><option value="">全部题型</option><option value="choice">选择题</option><option value="written">综合题</option></select></label>
+            <label>练习状态<select id="exam-status"><option value="">全部状态</option><option value="unanswered">尚未完成</option><option value="review">待复习</option><option value="mastered">答对 / 自评掌握</option></select></label>
+          </div>
+        </form>
+        <details class="question-directory" open>
+          <summary>题目目录 <span id="result-count">0 题</span></summary>
+          <p class="directory-hint">按年份从近到远排列；一题可关联多个章节。</p>
+          <div id="question-directory" class="question-grid" aria-label="选择一道题"></div>
+        </details>
+        <a id="back-to-chapter" class="back-chapter" href="sequence.html">回到章节实验 <span aria-hidden="true">↗</span></a>
+      </aside>
+      <section id="question-panel" class="question-panel" aria-label="真题练习" tabindex="-1">
+        <div id="empty-state" class="empty-state" hidden><span aria-hidden="true">⌕</span><h2>没有符合条件的题目</h2><p>可以调整年份、章节或关键词。没有对应真题的年份，不用原创题补齐。</p><button id="empty-reset" class="primary-button" type="button">查看全部题目</button></div>
+        <article id="question-card">
+          <div class="question-heading"><div class="question-meta"><span id="question-year"></span><span id="question-type"></span><span id="question-position"></span></div><button id="reset-question" type="button" class="quiet-button">重做本题</button></div>
+          <div id="question-tags" class="question-tags"></div>
+          <h2 id="question-title"></h2>
+          <p id="question-version" class="question-version"></p>
+          <div id="source-required" class="source-required" hidden><strong>本题须查看完整原题</strong><p>本页保留考点提要，完整题面或配图请通过来源查看，作答后可在此记录结果。</p><label><input id="source-seen" type="checkbox">我已查看完整题面与配图</label></div>
+          <div id="question-stem" class="question-stem"></div>
+          <a id="question-source" class="source-link" target="_blank" rel="noopener noreferrer">查看题目来源 <span aria-hidden="true">↗</span></a>
+          <p id="question-source-note" class="source-note"></p>
+          <form id="choice-form" hidden><fieldset><legend>选择你的答案</legend><div id="question-options" class="question-options"></div></fieldset><button id="submit-choice" type="submit" class="primary-button">提交答案</button></form>
+          <section id="written-form" hidden aria-label="综合题作答"><label for="written-draft" class="draft-label">写下你的思路<span>自动保存 · 最多 12000 字符</span></label><textarea id="written-draft" rows="7" maxlength="12000" placeholder="先写设计思路、关键步骤或代码，再对照解析检查。"></textarea><div class="written-actions"><button id="reveal-written" class="primary-button" type="button" aria-expanded="false" aria-controls="question-feedback">查看参考思路</button><span id="draft-status" role="status"></span></div></section>
+          <div id="question-feedback" class="question-feedback" hidden aria-live="polite"><strong id="feedback-title"></strong><p id="feedback-explanation"></p><div id="written-assessment" hidden><p>对照思路后，为自己做一个标记：</p><button id="mark-mastered" class="assessment-button" type="button" aria-pressed="false">已掌握</button><button id="mark-review" class="assessment-button" type="button" aria-pressed="false">待复习</button><small>自评只记录你的判断，不计入选择题答对数。</small></div></div>
+          <nav class="question-pager" aria-label="题目翻页"><button id="previous-question" type="button">← 上一题</button><span id="pager-position"></span><button id="next-question" type="button">下一题 →</button></nav>
+        </article>
+      </section>
+    </div>
+    <noscript><p class="notice">练习交互需要启用 JavaScript。你仍可返回首页和各章节阅读页面。</p></noscript>
+  </main>
+  <footer class="exam-footer"><span>知序 · 把每一步，看明白。</span><span>本地作答 · 独立记录 · 来源可查</span></footer>
+</body>
+</html>
