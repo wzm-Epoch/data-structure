@@ -110,6 +110,38 @@
     });
     sidebar.querySelector('.course-label').after(directory);
     sidebar.classList.add('has-course-nav');
+    const sections = sidebar.querySelector('.chapters');
+    sections?.setAttribute('aria-label', '本章段落');
+    const sectionButtons = [...(sections?.querySelectorAll('.chapter[data-view]') || [])];
+    const demo = sectionButtons.find(button => button.dataset.view === 'demo');
+    if (demo) demo.textContent = '逐行演示';
+    if (sections) for (const tab of document.querySelectorAll('.tabs [data-view]')) {
+      if (sectionButtons.some(button => button.dataset.view === tab.dataset.view)) continue;
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'chapter';
+      button.dataset.view = tab.dataset.view;
+      button.textContent = tab.textContent.trim();
+      sections.append(button);
+      sectionButtons.push(button);
+    }
+    function syncSection() {
+      for (const button of sectionButtons) {
+        const panel = document.getElementById('view-' + button.dataset.view);
+        const active = panel && !panel.hidden;
+        button.classList.toggle('current', active);
+        if (active) button.setAttribute('aria-current', 'true');
+        else button.removeAttribute('aria-current');
+      }
+    }
+    if (sectionButtons.length) {
+      const observer = new MutationObserver(syncSection);
+      for (const button of sectionButtons) {
+        const panel = document.getElementById('view-' + button.dataset.view);
+        if (panel) observer.observe(panel, {attributes: true, attributeFilter: ['hidden']});
+      }
+      syncSection();
+    }
     const tools = document.createElement('div'); tools.className = 'workspace-tools';
     const badge = document.createElement('span'); badge.className = 'offline-label'; badge.textContent = '本地学习 · 离线可用';
     const focus = document.createElement('button');
