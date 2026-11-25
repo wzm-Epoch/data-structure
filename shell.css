@@ -12,3 +12,8 @@
 :focus-visible{outline:2px solid #187c68;outline-offset:3px}
 .lesson-brief p,.complexity-note p,.graph-note,.scenario-row>span,.code-comment{color:#5c6b77}
 .lesson-brief p,.complexity-note p,.graph-note,.scenario-row>span,.hint-text{font-size:12px}
+.input-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:8px;margin-left:auto;max-width:100%}
+#view-demo .input-actions>.primary{margin-left:0}
+#view-demo .input-actions~p{flex-basis:100%;margin:0}
+#view-demo .input-actions~p:empty{display:none}
+#view-demo .prose-panel>.actions:has(#generate){display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
