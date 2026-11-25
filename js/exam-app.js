@@ -5,6 +5,7 @@
   const pageLinks = { linear: 'sequence.html', stack: 'stack-queue.html', string: 'string.html', tree: 'tree.html', graph: 'graph.html', search: 'search.html', sort: 'sort.html', algorithm: 'algorithm.html' };
   let state, filtered = [], selectedId = '', storageAvailable = true;
   const params = new URLSearchParams(location.search);
+  let draftTimer = null, pendingDraftQuestion = null;
   function notice(text) { $('storage-notice').textContent = text; $('storage-notice').hidden = false; }
   try {
     const loaded = E.readState(localStorage.getItem(E.storageKey), questions);
@@ -16,10 +17,29 @@
   }
   if (!globalThis.ExamDataEarly || !globalThis.ExamDataLate) notice('部分题库文件未加载。请确认两个真题资料文件与页面保存在同一项目中；当前仅显示已加载内容。');
   function save() {
+    clearTimeout(draftTimer);
+    draftTimer = null;
+    const draftQuestion = pendingDraftQuestion;
+    pendingDraftQuestion = null;
     if (storageAvailable) try { localStorage.setItem(E.storageKey, JSON.stringify(state)); } catch (_) {
       storageAvailable = false; notice('本机记录保存失败，本次作答仍保留在当前页面。其他章节记录未修改。');
     }
+    if (draftQuestion) {
+      draftStatus();
+      // Keep the directory button in place when blur precedes a click on it.
+      const button = $('question-directory').querySelector(`[data-question="${CSS.escape(draftQuestion.id)}"]`);
+      if (button) syncDirectoryButton(button, draftQuestion);
+    }
   }
+  function draftStatus() {
+    let message = '';
+    if ($('written-draft').value) {
+      if (!storageAvailable) message = '草稿保留在本页';
+      else message = pendingDraftQuestion ? '正在保存草稿…' : '草稿已保存到本机';
+    }
+    $('draft-status').textContent = message;
+  }
+  function flushDraft() { if (pendingDraftQuestion) save(); }
   function write(question, patch) { state = E.updateRecord(state, question, patch); save(); }
   function current() { return filtered.find(q => q.id === selectedId); }
   function filters() { return { chapter: $('exam-chapter').value, year: $('exam-year').value, type: $('exam-type').value, query: $('exam-query').value, status: $('exam-status').value }; }
@@ -49,17 +69,22 @@
   }
   $('exam-query').value = (params.get('query') || '').slice(0, 300);
   selectedId = params.get('question') || '';
+  function syncDirectoryButton(button, q) {
+    const status = E.outcome(q, E.getRecord(state, q));
+    button.classList.remove('done', 'needs-review');
+    const label = { correct: '答对', incorrect: '待复习', 'source-match': '与来源答案一致', 'source-difference': '与来源答案不同', mastered: '自评掌握', review: '自评待复习', draft: '已写草稿', recorded: '已记录' }[status] || '尚未作答';
+    button.setAttribute('aria-label', `${q.year} 年第 ${q.number} 题，${q.title}，${label}`);
+    button.title = q.title + ' · ' + label;
+    if (['correct', 'mastered', 'source-match', 'recorded'].includes(status)) button.classList.add('done');
+    if (['incorrect', 'review', 'source-difference'].includes(status)) button.classList.add('needs-review');
+  }
   function renderDirectory() {
     const fragment = document.createDocumentFragment();
     for (const q of filtered) {
-      const button = document.createElement('button'), status = E.outcome(q, E.getRecord(state, q));
+      const button = document.createElement('button');
       button.type = 'button'; button.dataset.question = q.id; button.textContent = q.id;
       button.setAttribute('aria-current', String(q.id === selectedId));
-      const label = { correct: '答对', incorrect: '待复习', 'source-match': '与来源答案一致', 'source-difference': '与来源答案不同', mastered: '自评掌握', review: '自评待复习', draft: '已写草稿', recorded: '已记录' }[status] || '尚未作答';
-      button.setAttribute('aria-label', `${q.year} 年第 ${q.number} 题，${q.title}，${label}`);
-      button.title = q.title + ' · ' + label;
-      if (['correct', 'mastered', 'source-match', 'recorded'].includes(status)) button.className = 'done';
-      if (['incorrect', 'review', 'source-difference'].includes(status)) button.className = 'needs-review';
+      syncDirectoryButton(button, q);
       fragment.append(button);
     }
     $('question-directory').replaceChildren(fragment);
@@ -118,12 +143,13 @@
     }
     $('question-options').replaceChildren(choices);
     $('written-draft').value = record.draft;
-    $('draft-status').textContent = record.draft ? storageAvailable ? '草稿已保存到本机' : '草稿保留在本页' : '';
+    draftStatus();
     feedback(q, record); syncActions(q, record);
     $('pager-position').textContent = `${position + 1} / ${filtered.length}`;
     $('previous-question').disabled = position <= 0; $('next-question').disabled = position >= filtered.length - 1;
   }
   function refresh() {
+    flushDraft();
     filtered = E.filterQuestions(questions, filters(), state);
     if (!filtered.some(q => q.id === selectedId)) selectedId = filtered[0]?.id || '';
     const chapter = $('exam-chapter').value;
@@ -156,10 +182,14 @@
   });
   $('written-draft').addEventListener('input', () => {
     const q = current(); if (!q) return;
-    write(q, { draft: $('written-draft').value });
-    $('draft-status').textContent = storageAvailable ? '草稿已保存到本机' : '草稿保留在本页';
-    renderDirectory(); stats();
+    state = E.updateRecord(state, q, { draft: $('written-draft').value });
+    pendingDraftQuestion = q;
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(flushDraft, 400);
+    draftStatus();
   });
+  $('written-draft').addEventListener('blur', flushDraft);
+  window.addEventListener('pagehide', flushDraft);
   $('reveal-written').addEventListener('click', () => {
     const q = current(); if (!q) return; const record = E.getRecord(state, q);
     write(q, { revealed: !record.revealed }); renderQuestion(); $('reveal-written').focus({ preventScroll: true });
