@@ -70,7 +70,15 @@
     };
   }
 
-  g.SiteShell = { shuffleChoices, highlightC, readProgress, windowLog };
+  function renderProgress(host, done, total, label, quizDone, quizTotal) {
+    const count = document.createElement('span');
+    const detail = document.createElement('small');
+    count.textContent = `${done} / ${total}`;
+    detail.textContent = `${label} · 自测 ${quizDone} / ${quizTotal}`;
+    host.replaceChildren(count, detail);
+  }
+
+  g.SiteShell = { renderProgress, shuffleChoices, highlightC, readProgress, windowLog };
   const chapters = [
     ['sequence.html', '顺序表'], ['linked.html', '链表'], ['stack-queue.html', '栈队列'],
     ['string.html', '串'], ['tree.html', '树'], ['graph.html', '图'],

@@ -1,5 +1,5 @@
 (function(){'use strict';const E=AlgorithmEngine,C=AlgorithmContent,V=AlgorithmRender,$=id=>document.getElementById(id),key='zhixu-algorithm-v1';let saved={completed:[],quiz:[]};try{const x=JSON.parse(localStorage.getItem(key)||'null');if(x&&Array.isArray(x.completed)&&Array.isArray(x.quiz))saved=x;}catch{}let trace,index=0,timer=null,pausedAt=-1,comparisons=[];
-const persist=()=>{try{localStorage.setItem(key,JSON.stringify(saved));}catch{}progress();};function progress(){$('progress').textContent=`实验 ${saved.completed.length}/${Object.keys(E.catalog).length} · 自测 ${saved.quiz.length}/${C.quiz.length}`;}
+const persist=()=>{try{localStorage.setItem(key,JSON.stringify(saved));}catch{}progress();};function progress(){SiteShell.renderProgress($('progress'),saved.completed.length,Object.keys(E.catalog).length,'实验',saved.quiz.length,C.quiz.length);}
 function stop(){if(timer!==null)clearTimeout(timer);timer=null;$('play').textContent='播放';}
 function view(name){stop();for(const n of ['demo','concept','compare','pitfalls','quiz'])$('view-'+n).hidden=n!==name;document.querySelectorAll('[data-view]').forEach(b=>{b.classList.toggle('active',b.dataset.view===name);if(b.getAttribute('role')==='tab'){b.setAttribute('aria-selected',b.dataset.view===name);b.tabIndex=b.dataset.view===name?0:-1;}});}
 function log(){SiteShell.windowLog($('log'),trace.steps,index,go);}
