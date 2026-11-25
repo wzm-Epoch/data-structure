@@ -4,3 +4,11 @@
 .input-panel #operation{width:230px;max-width:100%}.input-panel #preset{width:180px;max-width:100%}.input-panel #start,.input-panel #target{width:140px;max-width:100%}.input-panel input[type=checkbox],.playback input[type=checkbox]{width:16px;height:16px;vertical-align:middle}.input-panel label:has(input[type=checkbox]){display:flex;align-items:center;gap:7px;align-self:center}.playback label{display:inline-flex;align-items:center;gap:6px}.graph-code{line-height:1.9}
 
 #declaration{font:11px/1.7 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere}
+#view-demo .input-panel .inline-check{flex-direction:row;align-items:center;gap:8px;min-height:38px;white-space:nowrap}
+@media(max-width:720px){
+  #view-demo .input-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:end;gap:11px}
+  #view-demo .input-panel>label{min-width:0}
+  #view-demo .input-panel>.inline-check{grid-column:1/-1}
+  #view-demo .input-panel select,#view-demo .input-panel>button{width:100%;min-width:0;margin-left:0}
+  #view-demo .input-panel>button{height:38px}
+}
