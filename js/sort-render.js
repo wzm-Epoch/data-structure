@@ -6,7 +6,17 @@ function loserTree(s,trace,index){let current=s.frames.find(f=>f.name==='Externa
 const labels={comparisons:'关键字比较（含预处理）',preComparisons:'其中预处理比较',mainWrites:'主数组记录写',auxWrites:'辅助记录写',swaps:'实际交换',maxDepth:'递归最大深度',diskReads:'模拟块读',diskWrites:'模拟块写',rounds:'外部归并轮次'};
 function counters(s){return Object.entries(labels).map(([k,l])=>`<div>${l}<strong>${s[k]}</strong></div>`).join('');}
 function reachable(op){let seen=new Set();function visit(name){if(seen.has(name)||!E.R.functions[name])return;seen.add(name);let f=E.R.functions[name];for(let m of f.text.matchAll(/\b([A-Za-z_]\w*)\(/g))visit(m[1]);}visit('Run'+op);return [...seen].map(k=>E.R.functions[k]);}
-function code(trace){$('code').innerHTML=reachable(trace.operation).map(f=>E.R.source.slice(f.start-1,f.end).map((line,j)=>`<div class="sort-line" data-line="${f.start+j}"><span>${f.start+j}</span>${esc(line)}</div>`).join('')).join('');$('declaration').textContent=E.cSource(trace.operation).split('\nint Swap(')[0];}
+function code(trace) {
+  $('code').innerHTML = reachable(trace.operation).map(f => {
+    const heading = `<div class="sort-fn-sep">${esc(f.name)} · 源码第 ${f.start} 行</div>`;
+    const rows = E.R.source.slice(f.start - 1, f.end).map((line, j) => {
+      const number = f.start + j;
+      return `<div class="sort-line" data-line="${number}"><span>${number}</span>${esc(line)}</div>`;
+    }).join('');
+    return heading + rows;
+  }).join('');
+  $('declaration').textContent = E.cSource(trace.operation).split('\nint Swap(')[0];
+}
 function render(trace,index,selected){let s=trace.steps[index],audit=E.validate(trace.input,s.A,s.dir);s={...s,stabilityChange:audit.intact?audit.changed:[]};let vars=s.frames.at(-1)?.vars||{};let active=s.frames.findLast(f=>['Insertion','BinaryInsertion','Partition','Quick3','Merge','Heap','Sink','Runs','Replacement','External'].includes(f.name));$('badge').textContent=index===0?'尚未执行':s.done?'执行完成':'执行后状态';$('records').innerHTML=$('display').value==='bars'?bars(s):s.A.map((r,i)=>card(r,i,s,trace,selected)).join('');$('counters').innerHTML=counters(s);$('action').textContent=s.explanation;$('reason').textContent=s.transfer?`完整记录 ${record(s.transfer.record)} 复制到 ${s.transfer.target}，覆盖原值 ${record(s.transfer.before)}；这是一次记录写入。记录身份与关键字一起移动。`:(C.algorithms[trace.operation]||[])[1];$('comparison').textContent=s.comparison?`最近关键字比较：${s.comparison.a} 与 ${s.comparison.b}，按当前方向结果 ${s.comparison.value}（负=前者在前，0=等值）。`:'尚无关键字比较';$('access').textContent=`${s.stabilityChange.length?'此状态已能观察等值身份次序改变：'+s.stabilityChange.join(',')+'。 ':''}本步读取：${[...new Set(s.reads)].join('，')||'无'}；写入：${s.changed.join('，')||'无'}`;
 let region=s.region;let text=active?`${active.name} 当前变量：${JSON.stringify(active.vars)}`:'当前无算法帧';if(trace.operation==='shell'){let f=s.frames.findLast(f=>f.name==='Shell'),ins=s.frames.findLast(f=>f.name==='Insertion');text=`gap=${f?.vars.gap??'尚未设定'}；${ins?'当前间隔子序列：'+Array.from({length:s.n},(_,i)=>i).filter(i=>i>=ins.vars.lo&&(i-ins.vars.lo)%ins.vars.gap===0).join(','):'尚未进入子序列'}。间隔组有序不代表连续前缀有序。`;}else if(trace.operation==='three'&&active?.name==='Quick3'){let v=active.vars;text=`小于[${v.lo},${v.lt})；等于[${v.lt},${v.i})；未知[${v.i},${v.gt}]；大于(${v.gt},${v.hi}]（分区变量初始化后适用）`;}else if(region)text+=`；最近阶段：${['有序范围','分区最终区','有效堆','已归并段','位收集','归并段'][region.kind]} [${region.lo},${region.hi}]`; $('region').textContent=text;
 $('heap').innerHTML=trace.operation==='heap'?tree(s):trace.operation==='loser'?loserTree(s,trace,index):'';$('heap-note').textContent=trace.operation==='heap'?'父子边根据当前数组槽位绘制；身份随记录移动。有效堆[0,size)，已排序后缀[size,n)；建堆与Sink中途可能暂不满足堆序。':'';
