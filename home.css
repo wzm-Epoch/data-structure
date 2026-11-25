@@ -8,3 +8,4 @@
 @media(max-width:319px){.chapter-grid{grid-template-columns:1fr}.hero h1{font-size:25px}.hero h1 em{white-space:normal}.main-nav{gap:10px}.section-heading p{display:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}.chapter-card:hover,.chapter-card:hover .chapter-glyph,.start-button:hover{transform:none}}
 @media(max-width:760px){.section-heading{display:block}.section-heading h2{font-size:18px}.section-heading p{max-width:none;text-align:left;margin-top:6px}.chapter-card p{min-height:37px}}
+@media(max-width:720px){.main-nav a,.exam-banner a,.chapter-dialog .exam-link{display:inline-flex;align-items:center;min-height:40px}.chapter-dialog .close-dialog{width:40px;height:40px}}

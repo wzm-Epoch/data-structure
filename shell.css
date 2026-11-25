@@ -17,3 +17,8 @@
 #view-demo .input-actions~p{flex-basis:100%;margin:0}
 #view-demo .input-actions~p:empty{display:none}
 #view-demo .prose-panel>.actions:has(#generate){display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+@media(max-width:720px){
+  .topbar>.chapter-switch a{display:inline-flex;align-items:center;min-height:40px}
+  :is(.tabs,.playback,.input-panel,.input-actions,.quick-examples) button,
+  :is(.input-panel,.playback) select,#view-demo .actions button,#focus-mode,#mobile-clear{min-height:40px}
+}
