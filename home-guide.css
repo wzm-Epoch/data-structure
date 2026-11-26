@@ -1,0 +1,90 @@
+.explainer-hero {
+  display: grid;
+  grid-template-columns: minmax(0, .86fr) minmax(0, 1.14fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 76px);
+  padding: clamp(32px, 4.4vw, 64px) clamp(20px, 4vw, 56px);
+  margin: 20px 0 0;
+  border: 1px solid #e2decf;
+  border-radius: 18px;
+  background: #faf6ec;
+}
+.explainer-kicker {
+  margin: 0 0 18px;
+  color: #576e60;
+  font-size: 12px;
+  letter-spacing: .16em;
+}
+.explainer-copy h1 {
+  margin: 0;
+  color: #263b32;
+  font-family: "Songti SC", "Noto Serif CJK SC", SimSun, serif;
+  font-size: clamp(40px, 5.15vw, 72px);
+  line-height: 1.13;
+  letter-spacing: -.07em;
+}
+.explainer-copy h1 em { display: inline-block; color: #326d53; font-style: normal; }
+.explainer-intro {
+  max-width: 310px;
+  margin: 24px 0 0;
+  color: #4c6256;
+  font-size: 14px;
+  line-height: 1.85;
+}
+.explainer-copy .hero-actions { flex-wrap: wrap; gap: 12px 20px; margin-top: 24px; }
+.explainer-lab-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  gap: 7px;
+  color: #355b48;
+  font-size: 13px;
+}
+.explainer-lab-link b { font-weight: 500; }
+.explainer-lab-link:hover { text-decoration: underline; }
+
+.learning-guide {
+  min-width: 0;
+  padding: clamp(18px, 2.4vw, 34px);
+  border: 1px solid #dfddcf;
+  border-radius: 14px;
+  background: #fffdf7;
+  box-shadow: 0 12px 25px #33443808;
+}
+.learning-guide h2 { margin: 0; color: #4e6357; font-size: 13px; }
+.learning-guide-lead {
+  margin: 9px 0 20px;
+  color: #285542;
+  font-family: "Songti SC", "Noto Serif CJK SC", SimSun, serif;
+  font-size: clamp(23px, 3vw, 35px);
+  font-weight: 700;
+  line-height: 1.45;
+}
+.learning-guide-lead span { display: inline-block; }
+.learning-guide-steps {
+  display: grid;
+  gap: 15px;
+  margin: 0;
+  padding: 17px 0 0 2.3rem;
+  border-top: 1px solid #e7e2d3;
+  list-style: decimal-leading-zero;
+}
+.learning-guide-steps li { padding-left: .45rem; }
+.learning-guide-steps li::marker { color: #856b3e; font: 700 16px Consolas, monospace; }
+.learning-guide-steps h3 { margin: 0; color: #273e34; font-size: 15px; line-height: 1.5; }
+.learning-guide-steps p { margin: 2px 0; color: #42594c; font-size: 13px; }
+.learning-guide-steps small { color: #596c60; font-size: 12px; }
+
+@media (max-width: 760px) {
+  .explainer-hero { grid-template-columns: minmax(0, 1fr); gap: 22px; padding: 22px 16px 16px; }
+  .explainer-copy h1 { font-size: clamp(33px, 8.7vw, 52px); }
+  .explainer-copy h1 br { display: none; }
+  .explainer-copy h1 em { margin-left: .3ch; }
+  .explainer-kicker { margin-bottom: 12px; }
+  .explainer-intro { margin-top: 13px; max-width: none; }
+  .explainer-copy .hero-actions { margin-top: 12px; }
+}
+@media (max-width: 380px) {
+  .explainer-hero { padding: 20px 10px 10px; }
+  .learning-guide { padding: 14px; }
+}

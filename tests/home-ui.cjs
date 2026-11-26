@@ -12,6 +12,12 @@ const root=path.resolve(__dirname,'..');
    await page.goto(pathToFileURL(path.join(root,'index.html')).href);
    assert.equal(await page.locator('.chapter-card').count(),8);
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+   const guide = page.getByRole('region',{name:'如何学好一种数据结构'});
+   assert(await guide.isVisible());
+   assert.deepEqual(await guide.getByRole('heading',{level:3}).allTextContents(),['存储结构','基本操作','应用场景']);
+   assert.deepEqual(await page.locator('.chapter-card').evaluateAll(cards=>cards.map(card=>card.getAttribute('href'))),
+      ['sequence.html','stack-queue.html','string.html','tree.html','graph.html','search.html','sort.html','algorithm.html']);
+   assert.equal(await page.locator('.exam-banner a').getAttribute('href'),'exams.html');
    await page.locator('#linear-card').click();assert(await page.locator('#linear-dialog').isVisible());
    await page.keyboard.press('Escape');assert(await page.locator('#linear-dialog').isHidden());
    await page.evaluate(()=>localStorage.setItem('zhixu-learning-v1',JSON.stringify({completed:['insert'],mastered:[0]})));
